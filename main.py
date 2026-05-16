@@ -45,7 +45,7 @@ def send_shop_webhook():
         })
 
     payload = {
-        "username": "Zenith 每日商店",
+        "username": "終究還是刷不到嗎?",
         "avatar_url": "https://media.valorant-api.com/v1/playercards/9fb348bc-41a4-91ad-d131-159c865c364f/displayIcon.png",
         "embeds": embeds
     }
