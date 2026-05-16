@@ -97,7 +97,8 @@
 
 <script>
     function copyCode() {
-        const codeText = "fetch('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1', {method: 'GET', redirect: 'manual'}).then(res => { const loc = res.headers.get('location'); if(loc) { copy(loc); console.log('%c🎉 獲取成功！長網址已自動複製到你的剪貼簿，請回 Discord 貼上！', 'color: #00ff7f; font-size: 16px; font-weight: bold;'); alert('🎉 獲取成功！\\n\\n安全網址已自動複製到您的剪貼簿！\\n請立刻回到 Discord 貼上指令查詢吧！'); } else { alert('❌ 獲取失敗！請確認您是否已經完成 Step 01 登入。'); } }).catch(err => alert('❌ 發生錯誤！請確認您是在 Riot 官網分頁中執行此代碼！'));";
+        // 升級版代碼：改為指向 playvalorant.com 域，徹底繞過 account 域的 CORS 跨域鎖定阻擋
+        const codeText = "if(window.location.hostname !== 'playvalorant.com'){ alert('❌ 偵測到您不在特戰英豪官網！\\n\\n請點擊確定，系統會自動幫您開啟【特戰英豪官網】。\\n等網頁載入完後，直接在「該新分頁」重新按 F12 貼上代碼即可！'); window.open('https://playvalorant.com/zh-tw/', '_blank'); } else { fetch('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1', {method: 'GET', redirect: 'manual'}).then(res => { const loc = res.headers.get('location'); if(loc) { copy(loc); console.log('%c🎉 獲取成功！長網址已自動複製到你的剪貼簿，請回 Discord 貼上！', 'color: #00ff7f; font-size: 16px; font-weight: bold;'); alert('🎉 獲取成功！\\n\\n安全網址已自動複製到您的剪貼簿！\\n請立刻回到 Discord 貼上指令查詢吧！'); } else { alert('❌ 獲取失敗！請確認您是否已經完成 Step 01 登入。'); } }).catch(err => alert('❌ 發生錯誤！請確認您是在 Riot 官網分頁中執行此代碼！')); }";
         
         navigator.clipboard.writeText(codeText).then(() => {
             const msg = document.getElementById('successMsg');
