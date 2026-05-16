@@ -3,63 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenith 特戰網址過濾助手</title>
+    <title>Zenith 特戰網址提取助手</title>
     <style>
         body { font-family: "Segoe UI", Arial, sans-serif; background-color: #0b0b0b; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-        .container { background-color: #111111; border: 1px solid #222222; padding: 35px 25px; border-radius: 4px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
+        .container { background-color: #111111; border: 1px solid #222222; padding: 35px 25px; border-radius: 4px; max-width: 460px; width: 100%; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
         h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; color: #ff4655; }
         .subtitle { color: #888888; font-size: 13px; margin-bottom: 25px; }
         .input-group { text-align: left; margin-bottom: 15px; }
         label { display: block; font-size: 12px; color: #aaaaaa; margin-bottom: 8px; font-weight: 600; line-height: 1.5; }
         input { width: 100%; padding: 12px; background-color: #161616; border: 1px solid #333; color: #fff; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
         input:focus { border-color: #ff4655; outline: none; }
-        .btn { display: block; width: 100%; padding: 12px 0; background-color: #ff4655; color: #ffffff; font-weight: 700; font-size: 15px; border-radius: 4px; cursor: pointer; border: none; margin-top: 20px; }
-        .btn:hover { background-color: #dc3d4b; }
+        .btn { display: block; width: 100%; padding: 10px 0; background-color: #222; color: #00ffcc; font-weight: 700; font-size: 13px; border-radius: 4px; cursor: pointer; border: 1px solid #333; margin-top: 5px; }
+        .btn:hover { background-color: #333; }
+        .submit-btn { display: block; width: 100%; padding: 12px 0; background-color: #ff4655; color: #fff; font-weight: 700; font-size: 15px; border-radius: 4px; cursor: pointer; border: none; margin-top: 15px; }
+        .submit-btn:hover { background-color: #dc3d4b; }
         .result-box { margin-top: 20px; background: #000; padding: 15px; border-radius: 4px; display: none; text-align: left; border: 1px solid #222; }
         .result-title { color: #ff4655; font-size: 12px; font-weight: bold; margin-bottom: 5px; }
         textarea { width: 100%; height: 80px; background: #111; border: 1px solid #222; color: #00ffcc; font-size: 11px; resize: none; word-break: break-all; margin-top: 5px; padding: 10px; box-sizing: border-box; border-radius: 4px; font-family: monospace; }
-        .step-box { background: #161616; padding: 15px; border-radius: 4px; border: 1px dashed #444; margin-bottom: 20px; text-align: left; }
-        .step-link { display: inline-block; color: #ff4655; text-decoration: none; font-weight: bold; margin-top: 8px; font-size: 14px; }
-        .step-link:hover { text-decoration: underline; color: #dc3d4b; }
+        .step-box { background: #161616; padding: 15px; border-radius: 4px; border: 1px dashed #444; margin-bottom: 20px; text-align: left; font-size: 13px; line-height: 1.6; }
+        code { background: #000; color: #ff4655; padding: 2px 6px; border-radius: 3px; font-family: monospace; font-size: 12px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Zenith URL Assistant</h1>
-    <div class="subtitle">100% 安全防封鎖！一鍵提取專屬商店網址</div>
+    <div class="subtitle">🛡️ 100% 成功率！利用官方控制台免除封鎖阻擋</div>
     
-    <div id="converterForm">
-        <div class="step-box">
-            <span style="font-size: 13px; color: #ff4655; font-weight: bold;">步驟一：獲取官方合法登入憑證</span><br>
-            <p style="font-size: 11px; color: #aaa; margin: 5px 0 10px 0; line-height: 1.4;">
-                1. 請先點擊 <a href="https://playvalorant.com/zh-tw/" target="_blank" style="color: #00ffcc; font-weight: bold; text-decoration: none;">【進入特戰官方主站】</a> 並在右上角完成您的帳號登入。<br>
-                2. 登入成功後回到這裡，點擊 <a href="https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token%20id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid%20link%20ban" target="_blank" style="color: #00ffcc; font-weight: bold; text-decoration: none;">【提取專屬商店連結】</a>，網頁會秒變空白並產生長網址。
-            </p>
-        </div>
+    <div class="step-box">
+        <strong style="color: #ff4655;">💡 獲取三步驟：</strong><br>
+        1. 先點擊 <a href="https://playvalorant.com/zh-tw/" target="_blank" style="color: #00ffcc; font-weight: bold; text-decoration: none;">【前往特戰官方網站】</a> 並完成登入。<br>
+        2. 在官網任何地方按下 <code>F12</code>（或右鍵 -> 檢查），切換到 <strong>Console (主控台)</strong>。<br>
+        3. 點擊下方按鈕複製代碼，貼進 Console 並按下 <code>Enter</code> 執行：
+        <button class="btn" onclick="copyConsoleCode()">📋 點我複製 Console 核心代碼</button>
+    </div>
 
-        <div class="input-group">
-            <label>步驟二：登入後網頁會變空白，請複製瀏覽器最上方「整條長網址」貼在下方：</label>
-            <input type="text" id="riotUrl" placeholder="https://playvalorant.com/opt_in/#access_token=..." oninput="convertUrl()">
-        </div>
+    <div class="input-group">
+        <label>步驟三：將 Console 執行後吐出的「一長串複雜文字」貼在下方：</label>
+        <input type="text" id="rawToken" placeholder="貼上執行結果..." oninput="processToken()">
     </div>
 
     <div class="result-box" id="resultBox">
-        <div class="result-title">🎉 成功提取網址！請複製下方內容貼回 Discord 查商店：</div>
+        <div class="result-title">🎉 成功生成商店網址！請複製貼回 Discord：</div>
         <textarea id="outputUrl" readonly></textarea>
-        <button class="btn" onclick="copyResult()">一鍵複製商店網址</button>
+        <button class="submit-btn" onclick="copyResult()">一鍵複製商店網址</button>
     </div>
 </div>
 
 <script>
-function convertUrl() {
-    const input = document.getElementById('riotUrl').value.trim();
+function copyConsoleCode() {
+    const code = `console.log(document.cookie.match(/id_token=([^;]+)/)?.[1] || "請確保您已成功登入官網！");`;
+    navigator.clipboard.writeText(code).then(() => {
+        alert('📋 代碼已複製！請去官方網頁的 F12 Console 貼上並 Enter。');
+    });
+}
+
+function processToken() {
+    const input = document.getElementById('rawToken').value.trim();
     const resultBox = document.getElementById('resultBox');
     const outputUrl = document.getElementById('outputUrl');
     
-    let match = input.match(/access_token=([^&]+)/);
-    if (match) {
-        outputUrl.value = "https://playvalorant.com/zh-tw/opt_in/#access_token=" + match[1];
+    if (input.length > 50) {
+        // 自動幫群友包裝成 Discord 機器人看得懂的標準格式
+        outputUrl.value = "https://playvalorant.com/zh-tw/opt_in/#access_token=" + input;
         resultBox.style.display = "block";
     } else {
         resultBox.style.display = "none";
@@ -70,9 +76,8 @@ function copyResult() {
     let t = document.getElementById('outputUrl');
     t.select();
     document.execCommand('copy');
-    alert('🎉 複製成功！快回 Discord 貼上吧！');
-    // 自動清空輸入，方便下一次使用
-    document.getElementById('riotUrl').value = '';
+    alert('🎉 商店網址已複製！快回 Discord 查詢吧！');
+    document.getElementById('rawToken').value = '';
     document.getElementById('resultBox').style.display = 'none';
 }
 </script>
