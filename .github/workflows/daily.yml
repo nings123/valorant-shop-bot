@@ -1,0 +1,22 @@
+name: Valorant Daily Bot
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 每天台灣時間早上 08:00 自動執行
+  workflow_dispatch:     # 允許手動點擊按鈕測試
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run Script
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        run: python main.py
