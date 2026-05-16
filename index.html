@@ -6,7 +6,7 @@
     <title>Zenith Token 獲取助手</title>
     <style>
         body {
-            font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
             background-color: #0b0b0b;
             color: #ffffff;
             display: flex;
@@ -27,7 +27,7 @@
             width: 100%;
             text-align: center;
         }
-        h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; color: #ffffff; text-transform: uppercase; }
+        h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; }
         .subtitle { color: #888888; font-size: 13px; margin-bottom: 30px; letter-spacing: 1px; }
         .step-card {
             background-color: #161616;
@@ -40,8 +40,8 @@
         .step-num { font-size: 12px; color: #ff4655; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; display: block; letter-spacing: 1px; }
         .step-text { color: #cccccc; font-size: 14px; line-height: 1.6; }
         
-        .btn {
-            display: inline-block;
+        .drag-btn {
+            display: block;
             width: 100%;
             padding: 18px;
             background-color: #ff4655;
@@ -52,18 +52,18 @@
             letter-spacing: 1px;
             border-radius: 4px;
             box-sizing: border-box;
-            cursor: pointer;
+            border: 2px dashed #ffffff;
+            cursor: move;
             text-transform: uppercase;
             text-align: center;
+            margin: 20px 0;
             box-shadow: 0 0 15px rgba(255, 70, 85, 0.4);
-            transition: transform 0.2s, background-color 0.2s;
-            border: none;
+            transition: transform 0.2s;
         }
-        .btn:hover {
+        .drag-btn:hover {
             transform: scale(1.02);
             background-color: #e33e4d;
         }
-        
         .btn-secondary {
             display: inline-block;
             width: 100%;
@@ -76,7 +76,6 @@
             border-radius: 2px;
             box-sizing: border-box;
             text-align: center;
-            margin-bottom: 15px;
         }
         .btn-secondary:hover { border-color: #ffffff; color: #ffffff; }
         code { background: #000000; padding: 3px 6px; border-radius: 2px; color: #ff4655; font-family: monospace; font-size: 13px; }
@@ -91,26 +90,27 @@
     <div class="step-card">
         <span class="step-num">Step 01</span>
         <div class="step-text">
-            請先點擊下方按鈕前往官網登入您的 Riot 帳號（若瀏覽器已登入過可直接跳過）。
+            請按下鍵盤 <code>Ctrl + Shift + B</code> 顯示瀏覽器的「書籤列」。
         </div>
     </div>
-    <a href="https://account.riotgames.com/" target="_blank" class="btn-secondary">前往 Riot 官方登入中心</a>
 
     <div class="step-card">
         <span class="step-num">Step 02</span>
         <div class="step-text">
-            登入後回來點擊下方紅色按鈕。會開啟一個微軟或官方空白網頁，請<b>直接複製該網頁最上方的「整條長網址」</b>。
+            用滑鼠按住下方<b>紅色虛線按鈕</b>，直接【<b>拖曳到書籤列</b>】放開（若有舊的書籤請先按右鍵刪除）。
         </div>
+        
+        <a class="drag-btn" href="javascript:(function(){const host=window.location.hostname;const hash=window.location.hash;if(host==='playvalorant.com'&&hash.includes('access_token')){const el=document.createElement('textarea');el.value=window.location.href;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 獲取成功！\n\n網址已自動複製到剪貼簿！\n快回 Discord 貼上指令吧！');window.location.href='https://auth.riotgames.com/logout';}else if(host!=='playvalorant.com'){alert('❌ 請先前往特戰英豪官網分頁！\n\n點擊確定後將自動幫您開啟正確網頁，到該網頁後再點一次這個書籤即可！');window.open('https://playvalorant.com/zh-tw/','_blank');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
+            ➔ 拖曳我到書籤列 ➔
+        </a>
+        
+        <a href="https://account.riotgames.com/" target="_blank" class="btn-secondary">點我前往 Riot 官方登入中心</a>
     </div>
-    
-    <a href="https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1" target="_blank" class="btn">
-        🔗 點我獲取授權網址
-    </a>
 
-    <div class="step-card" style="margin-top: 25px; margin-bottom: 0;">
+    <div class="step-card" style="margin-bottom: 0;">
         <span class="step-num">Step 03</span>
         <div class="step-text">
-            回到 Discord 輸入 <code>/shop</code>，並將複製的整條長網址直接貼進 <code>access_token</code> 欄位即可秒出商店！
+            登入後在<b>特戰官網分頁</b>點一下這個書籤，網頁會閃一下並彈出「獲取成功」，金鑰就自動複製好了！
         </div>
     </div>
 </div>
