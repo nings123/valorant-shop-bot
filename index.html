@@ -114,13 +114,13 @@
     <div class="step-box">
         <div class="step-title">1️⃣ 第一步：登入 Riot 帳號管理中心</div>
         <p style="margin-bottom:0;">請點擊下方按鈕前往 Riot 官方網站登入您的帳號。若瀏覽器已經登入過，確認看得到自己的 Riot ID 即可。</p>
-        <a class="btn btn-secondary" href="https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&redirect_uri=http%3A%2F%2Flocalhost%2Fredirect&response_type=token+id_token&scope=openid+link+ban" target="_blank">🔗 點我獲取安全通道網址</a>
+        <a class="btn" href="https://account.riotgames.com/" target="_blank">👉 前往 Riot 官方登入</a>
     </div>
 
     <div class="step-box">
         <div class="step-title">2️⃣ 第二步：獲取安全授權網址</div>
-        <p style="margin-bottom:0;">登入完成後，**不要關閉剛才的網頁**，直接點擊下方按鈕。它會在新分頁開啟一個寫著「無法連線到此頁面 (localhost)」的網頁，這是完全正常的！</p>
-        <a class="btn btn-secondary" href="https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token%20id_token&redirect_uri=http%3A%2F%2Flocalhost%2Fredirect&scope=openid%20link%20ban" target="_blank">🔗 點我獲取安全通道網址</a>
+        <p style="margin-bottom:0;">登入完成後，**不要關閉剛才的網頁**，直接點擊下方按鈕。它會在背景動態生成 Riot 要求的密鑰，並引導至一個顯示「無法連線到此頁面 (localhost)」的網頁，這是完全正常的！</p>
+        <button class="btn btn-secondary" id="authBtn" style="width: 100%;">🔗 點我獲取安全通道網址</button>
     </div>
 
     <div class="step-box" style="border-color: #3b82f6;">
@@ -154,6 +154,23 @@
 </div>
 
 <script>
+    // 隨機生成符合 Riot 安全機制的 nonce 字串
+    function generateNonce() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < 16; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+    }
+
+    document.getElementById('authBtn').addEventListener('click', () => {
+        const nonce = generateNonce();
+        // 將動態生成的 nonce 完美塞入官方 RSO 網址
+        const dynamicUrl = `https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&nonce=${nonce}&redirect_uri=http%3A%2F%2Flocalhost%2Fredirect&response_type=token+id_token&scope=openid+link+ban`;
+        window.open(dynamicUrl, '_blank');
+    });
+
     function processUrl() {
         const url = document.getElementById('urlInput').value.trim();
         try {
