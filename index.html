@@ -1,99 +1,155 @@
-import discord
-from discord import app_commands
-import requests
-import os
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith Token 獲取助手</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0b0e14;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #161a23;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid #242b35;
+        }
+        h1 { font-size: 24px; margin-bottom: 10px; color: #ffffff; }
+        p { color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 25px; }
+        .btn {
+            display: inline-block;
+            background-color: #ffffff;
+            color: #0b0e14;
+            padding: 12px 24px;
+            font-weight: bold;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .btn:hover { background-color: #e2e8f0; transform: translateY(-1px); }
+        .result-box {
+            margin-top: 25px;
+            text-align: left;
+            display: none;
+        }
+        .field { margin-bottom: 15px; }
+        label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 5px; font-weight: bold; }
+        .input-group { display: flex; gap: 10px; }
+        input {
+            flex: 1;
+            background-color: #0b0e14;
+            border: 1px solid #242b35;
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        .copy-btn {
+            background-color: #242b35;
+            color: #ffffff;
+            border: 1px solid #333d4a;
+            padding: 0 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .copy-btn:hover { background-color: #333d4a; }
+    </style>
+</head>
+<body>
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
-
-class MyBot(discord.Client):
-    def __init__(self):
-        super().__init__(intents=discord.Intents.default())
-        self.tree = app_commands.CommandTree(self)
-
-    async def on_ready(self):
-        await self.tree.sync()
-        print(f"機器人 {self.user} 已上線！")
-
-bot = MyBot()
-
-def get_skin_data(uuid):
-    try:
-        res = requests.get("https://valorant-api.com/v1/weapons/skins?language=zh-TW")
-        if res.status_code == 200:
-            skins = res.json()["data"]
-            for skin in skins:
-                for chroma in skin["chromas"]:
-                    if chroma["uuid"] == uuid:
-                        return skin["displayName"], chroma["displayIcon"]
-                for level in skin["levels"]:
-                    if level["uuid"] == uuid:
-                        return skin["displayName"], level["displayIcon"]
-    except Exception as e:
-        print(f"API解析錯誤: {e}")
-    return "未知造型", "https://media.valorant-api.com/v1/playercards/9fb348bc-41a4-91ad-d131-159c865c364f/displayIcon.png"
-
-@bot.tree.command(name="shop", description="查詢你的每日特戰商店")
-@app_commands.describe(access_token="你的 Access Token", user_id="你的 Riot PUID")
-async def shop(interaction: discord.Interaction, access_token: str = None, user_id: str = None):
+<div class="container">
+    <h1>✨ Zenith Token 獲取助手</h1>
+    <p>為了帳號安全，本群不收集任何密碼。請點擊下方按鈕登入 Riot 官方網站，登入成功後會自動為您解析出查詢所需的金鑰代碼。</p>
     
-    if not access_token or not user_id:
-        embed = discord.Embed(
-            title="✨ Zenith 每日商店查詢教學",
-            description="為了帳號安全，本機器人不需要你的帳密！請依序取得 Token 來查詢：\n\n"
-                        "1. **前往專屬網頁**：請點擊下方連結前往我們的安全解析網頁：\n"
-                        "   [👉 點我前往 Zenith Token 獲取助手](https://你的github帳號.github.io/你的專案名稱/)\n\n"
-                        "2. **獲取 Token**：在網頁中點擊登入官方帳號，並將登入後的網址列貼回網頁，即可一鍵複製 `Access Token` 與 `User ID`！\n\n"
-                        "3. **回 Discord 查詢**：再次輸入 `/shop` 並把這兩串東西貼上，就能秒出你的商店卡片啦！",
-            color=0xFFFFFF
-        )
-        await interaction.response.send_message(embed=embed, ephemeral=True)
-        return
+    <button class="btn" id="loginBtn">第一步：前往 Riot 官方登入</button>
 
-    await interaction.response.defer(ephemeral=True)
+    <div class="result-box" id="resultBox">
+        <hr style="border: 0; border-top: 1px solid #242b35; margin: 25px 0;">
+        <h3 style="margin-bottom: 15px; font-size: 16px; color: #4ade80;">🎉 成功解析 Token！</h3>
+        
+        <div class="field">
+            <label>ACCESS TOKEN</label>
+            <div class="input-group">
+                <input type="text" id="accessToken" readonly>
+                <button class="copy-btn" onclick="copyField('accessToken')">複製</button>
+            </div>
+        </div>
 
-    try:
-        ent_res = requests.post(
-            "https://entitlements.auth.riotgames.com/api/v1/entitlements/token",
-            headers={"Authorization": f"Bearer {access_token}"},
-            json={}
-        )
-        if ent_res.status_code == 200:
-            entitlement_token = ent_res.json()["entitlements_token"]
-        else:
-            await interaction.followup.send("❌ Token 驗證失敗，請確認是否複製完整，或重新前往網頁獲取！")
-            return
-    except:
-        await interaction.followup.send("❌ 連線至 Riot 驗證伺服器超時。")
-        return
+        <div class="field">
+            <label>USER ID (PUID)</label>
+            <div class="input-group">
+                <input type="text" id="userId" readonly>
+                <button class="copy-btn" onclick="copyField('userId')">複製</button>
+            </div>
+        </div>
+        <p style="font-size: 12px; color: #64748b; margin-top: 15px; margin-bottom: 0;">💡 複製完成後，回到 Discord 輸入 <code>/shop</code> 並貼上這兩串數值即可查詢！</p>
+    </div>
+</div>
 
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-        "X-Riot-Entitlements-JWT": entitlement_token,
-        "X-Riot-ClientVersion": "release-08.11-shipping-16-2454652",
-        "X-Riot-ClientPlatform": "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIndpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkscGxhdGZvcm1DaGlwIiOiAidW5rbm93biINCn0="
+<script>
+    const riotAuthUrl = "https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token%20id_token&redirect_uri=http%3A%2F%2Flocalhost%2Fredirect&scope=openid%20link%20ban";
+
+    document.getElementById('loginBtn').addEventListener('click', () => {
+        const authWindow = window.open(riotAuthUrl, '_blank', 'width=500,height=600');
+        
+        alert("【操作指引】\n1. 請在彈出的視窗中登入您的 Riot 帳號。\n2. 登入成功後，視窗會變成『無法連線』或『localhost 拒絕連線』，這是完全正常的！\n3. 請直接複製那個失敗網頁的『整段網址列』，回來貼在下方的輸入框中。");
+        
+        const urlInput = prompt("請貼上登入成功後（localhost開頭）的完整網址列：");
+        if (urlInput) {
+            parseUrl(urlInput);
+        }
+    });
+
+    function parseUrl(url) {
+        try {
+            const accessMatch = url.match(/access_token=([^&]+)/);
+            const idTokenMatch = url.match(/id_token=([^&]+)/);
+            
+            if (accessMatch) {
+                document.getElementById('accessToken').value = accessMatch[1];
+                
+                if (idTokenMatch) {
+                    const payloadB64 = idTokenMatch[1].split('.')[1];
+                    const payload = JSON.parse(atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/')));
+                    document.getElementById('userId').value = payload.sub;
+                }
+                
+                document.getElementById('resultBox').style.display = 'block';
+            } else {
+                alert("網址格式不正確，未能解析出 Token，請確保複製了完整的網址！");
+            }
+        } catch (e) {
+            alert("解析出錯，請確認貼入的網址是否正確。");
+        }
     }
 
-    try:
-        res = requests.get(f"https://pd.ap.a.pvp.net/store/v2/storefront/{user_id}", headers=headers)
-        
-        if res.status_code == 200:
-            shop_data = res.json()
-            skin_uuids = shop_data["SkinsPanelLayout"]["SingleItemOffers"]
-            
-            embeds = [discord.Embed(description=f"✨ 每日商店查詢成功（新商店於台灣時間明早 8 點更新）", color=0xFFFFFF)]
-            
-            for uuid in skin_uuids:
-                name, icon_url = get_skin_data(uuid)
-                item_embed = discord.Embed(title=name, description="💰 特務幣商店商品", color=0x2B2D31)
-                item_embed.set_thumbnail(url=icon_url)
-                embeds.append(item_embed)
-                
-            await interaction.followup.send(embeds=embeds)
-        else:
-            await interaction.followup.send(f"❌ 查詢失敗，Token 可能過期了。(錯誤碼: {res.status_code})")
-    except Exception as e:
-        await interaction.followup.send(f"❌ 系統發生錯誤：{str(e)}")
-
-if __name__ == "__main__":
-    if BOT_TOKEN:
-        bot.run(BOT_TOKEN)
+    function copyField(id) {
+        const copyText = document.getElementById(id);
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(copyText.value);
+        alert("已複製到剪貼簿！");
+    }
+</script>
+</body>
+</html>
