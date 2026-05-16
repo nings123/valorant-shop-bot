@@ -41,9 +41,9 @@ async def shop(interaction: discord.Interaction, entitlement_token: str = None, 
 
     if not access_token or not user_id:
         embed = discord.Embed(
-            title="✨ Zenith 每日商店查詢教學",
+            title="✨每日商店查詢教學",
             description=f"為了帳號安全，本群不收集密碼。請點擊下方連結一鍵獲取：\n\n"
-                        f"[👉 點我前往 Zenith 專屬金鑰獲取網頁]({MY_WEB_URL})\n\n"
+                        f"[👉 點我前往 專屬金鑰獲取網頁]({MY_WEB_URL})\n\n"
                         f"1. 點擊網頁中的「官方授權登入」並完成登入。\n"
                         f"2. 登入後網頁會直接彈出代碼，點擊即可一鍵複製。\n"
                         f"3. 回到 Discord 輸入 `/shop` 填入對應欄位即可查詢！",
