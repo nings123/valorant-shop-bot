@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenith 特戰網址提取助手 v2.1</title>
+    <title>Zenith 特戰網址提取助手 v3.0</title>
     <style>
         body { 
             font-family: "Segoe UI", Arial, sans-serif; 
@@ -65,22 +65,6 @@
             border-color: #ff4655; 
             outline: none; 
         }
-        .btn { 
-            display: block; 
-            width: 100%; 
-            padding: 12px 0; 
-            background-color: #222; 
-            color: #00ffcc; 
-            font-weight: 700; 
-            font-size: 13px; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            border: 1px solid #333; 
-            margin-top: 5px; 
-        }
-        .btn:hover { 
-            background-color: #333; 
-        }
         .submit-btn { 
             display: block; 
             width: 100%; 
@@ -137,91 +121,56 @@
             font-size: 13px; 
             line-height: 1.6; 
         }
-        code { 
-            background: #000; 
-            color: #ff4655; 
-            padding: 2px 6px; 
-            border-radius: 3px; 
-            font-family: monospace; 
-            font-size: 12px; 
-        }
         ol { padding-left: 18px; margin: 8px 0; }
         li { margin-bottom: 8px; }
+        .highlight { color: #00ffcc; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Zenith URL Assistant</h1>
-    <div class="subtitle">🛡️ 安全防封鎖｜100% 成功獲取專屬商店 Token 網址 [v2.1]</div>
+    <div class="subtitle">🛡️ 終極無腦版｜100% 成功提取（支援手機 / 免開 F12）</div>
     
     <div class="step-box">
-        <strong style="color: #ff4655;">💡 獲取網址三步驟：</strong><br>
+        <strong style="color: #ff4655;">💡 超簡單獲取二步驟：</strong><br>
         <ol>
-            <li>先前往 <a href="https://playvalorant.com/zh-tw/" target="_blank" style="color: #00ffcc; font-weight: bold; text-decoration: none;">【特戰英豪官方網站】</a> 並登入您的帳號（右上角需顯示玩家 ID）。</li>
-            <li>在該網頁按下鍵盤的 <code>F12</code> 切換到 <strong>Console (主控台)</strong> 分頁。</li>
-            <li>點擊下方按鈕複製代碼，貼進 Console 並按下 <code>Enter</code> 執行：</li>
+            <li>請先點擊右側連結完成登入：<a href="https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token%20id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid%20link%20ban&nonce=1" target="_blank" style="color: #ff4655; font-weight: bold; text-decoration: underline;">【點我前往官方授權驗證】</a></li>
+            <li>登入完後，網頁會跳轉到官方的空白 404 頁面，這時請直接<span class="highlight">複製瀏覽器最上方「整條網址」</span>（內含 access_token）。</li>
         </ol>
-        <button class="btn" onclick="copyConsoleCode()">📋 一鍵複製 Console 專用讀取代碼</button>
     </div>
 
     <div class="input-group">
-        <label>步驟四：將 Console 跑出來並自動複製的內容貼在下方：</label>
-        <input type="text" id="rawToken" placeholder="Ctrl + V 貼上結果..." oninput="processToken()">
+        <label>步驟三：將複製到的「整條 404 長網址」直接貼在下方：</label>
+        <input type="text" id="rawToken" placeholder="https://playvalorant.com/zh-tw/404/#access_token=..." oninput="processToken()">
     </div>
 
     <div class="result-box" id="resultBox">
-        <div class="result-title">🎉 成功生成專屬商店網址！</div>
+        <div class="result-title">🎉 成功過濾並生成商店查詢網址！</div>
         <textarea id="outputUrl" readonly></textarea>
         <button class="submit-btn" onclick="copyResult()">一鍵複製網址（回 Discord 貼上）</button>
     </div>
 </div>
 
 <script>
-function copyConsoleCode() {
-    // 完美的本地快照讀取代碼，避免觸發 Riot 的 400 Bad Request
-    const code = `(() => {
-        console.clear();
-        let idToken = document.cookie.split('; ').find(row => row.startsWith('id_token='));
-        
-        if (!idToken) {
-            // 嘗試從當前會話快取或效能快照中尋找令牌流
-            let perf = window.performance.getEntriesByType("resource");
-            let found = perf.find(e => e.name.includes("access_token="));
-            if (found) {
-                let rawUrl = found.name;
-                copy(rawUrl);
-                console.log("%c🎉 【抓取成功】Token 網址已自動複製到剪貼簿！請回助手網頁貼上！", "color: #00ffcc; font-weight: bold; font-size: 14px;");
-                return;
-            }
-            alert("❌ 找不到登入狀態！請確認右上方是否真的已成功登入，或者請重新整理網頁再試一次。");
-            return;
-        }
-
-        // 格式化本地安全數據流
-        let finalUrl = "https://playvalorant.com/zh-tw/opt_in/#" + idToken.value;
-        copy(idToken);
-        console.log("%c🎉 【抓取成功】Token 憑證已自動複製！請回助手網頁貼上！", "color: #00ffcc; font-weight: bold; font-size: 14px;");
-    })()`;
-
-    navigator.clipboard.writeText(code).then(() => {
-        alert('📋 讀取腳本已複製！\n\n請前往特戰官網登入後，按下 F12 開啟 Console 貼上並按 Enter 即可！');
-    });
-}
-
 function processToken() {
     const input = document.getElementById('rawToken').value.trim();
     const resultBox = document.getElementById('resultBox');
     const outputUrl = document.getElementById('outputUrl');
     
-    if (input.length > 20) {
-        if (input.includes('access_token=') || input.includes('id_token=')) {
+    if (input.length > 30) {
+        // 不管群友貼的是完整網址還是截斷後的片段，自動辨識並封裝成標準商店格式
+        if (input.includes('access_token=')) {
             let tokenPart = input.split('#')[1] || input.split('?')[1] || input;
             outputUrl.value = "https://playvalorant.com/zh-tw/opt_in/#" + tokenPart;
-        } else {
+            resultBox.style.display = "block";
+        } else if (input.startsWith('eyJ')) { 
+            // 如果群友只貼了 Token 本身
             outputUrl.value = "https://playvalorant.com/zh-tw/opt_in/#access_token=" + input;
+            resultBox.style.display = "block";
+        } else {
+            resultBox.style.display = "none";
         }
-        resultBox.style.display = "block";
     } else {
         resultBox.style.display = "none";
     }
@@ -231,7 +180,7 @@ function copyResult() {
     let t = document.getElementById('outputUrl');
     t.select();
     document.execCommand('copy');
-    alert('🎉 商店網址已成功複製！快回 Discord 分享給機器人吧！');
+    alert('🎉 商店網址已成功複製！快回 Discord 分享或給機器人查詢吧！');
     document.getElementById('rawToken').value = '';
     document.getElementById('resultBox').style.display = 'none';
 }
