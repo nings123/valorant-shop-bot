@@ -40,7 +40,6 @@
         .step-num { font-size: 12px; color: #ff4655; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; display: block; letter-spacing: 1px; }
         .step-text { color: #cccccc; font-size: 14px; line-height: 1.6; }
         
-        /* 拖曳按鈕樣式 */
         .drag-btn {
             display: block;
             width: 100%;
@@ -54,7 +53,7 @@
             border-radius: 4px;
             box-sizing: border-box;
             border: 2px dashed #ffffff;
-            cursor: move; /* 顯示可拖曳的滑鼠圖標 */
+            cursor: move;
             text-transform: uppercase;
             text-align: center;
             margin: 20px 0;
@@ -92,17 +91,17 @@
     <div class="step-card">
         <span class="step-num">Step 01</span>
         <div class="step-text">
-            請先按下鍵盤 <code>Ctrl + Shift + B</code> 顯示瀏覽器的「書籤列」（最上方放最愛網站的那一橫條）。
+            請先按下鍵盤 <code>Ctrl + Shift + B</code> 顯示瀏覽器的「書籤列」（最上方放常用網站的一橫條）。
         </div>
     </div>
 
     <div class="step-card">
         <span class="step-num">Step 02</span>
         <div class="step-text">
-            用滑鼠按住下方<b>紅色虛線按鈕</b>，直接【<b>拖曳到書籤列</b>】放開。
+            用滑鼠按住下方<b>紅色虛線按鈕</b>，直接【<b>拖曳到書籤列</b>】放開（若有舊的可以先刪掉換成這個）。
         </div>
         
-        <a class="drag-btn" href="javascript:(function(){if(window.location.hostname!=='playvalorant.com'){alert('❌ 請先登入並前往特戰英豪官網分頁！\n\n點擊確定後將幫您開啟正確網頁，到該網頁後再點一次這個書籤即可！');window.open('https://playvalorant.com/zh-tw/','_blank');}else{fetch('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1',{method:'GET',redirect:'manual'}).then(res=>{const loc=res.headers.get('location');if(loc){const el=document.createElement('textarea');el.value=loc;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 獲取成功！\n\n安全網址已自動複製到您的剪貼簿！\n請立刻回到 Discord 貼上查詢吧！');}else{alert('❌ 獲取失敗！請確認您是否已經完成登入。');}}).catch(err=>alert('❌ 發生錯誤！請確認您是在特戰官網分頁中點擊此書籤！'));}})();">
+        <a class="drag-btn" href="javascript:(function(){if(window.location.hostname!=='playvalorant.com'){alert('❌ 請先登入並前往特戰英豪官網分頁！\n\n點擊確定後將幫您開啟正確網頁，到該網頁後再點一次這個書籤即可！');window.open('https://playvalorant.com/zh-tw/','_blank');}else{fetch('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1',{method:'GET',redirect:'manual'}).then(res=>{const loc=res.headers.get('location')||res.url;if(loc&&loc.includes('access_token')){const el=document.createElement('textarea');el.value=loc;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 獲取成功！\n\n安全長網址已自動複製到您的剪貼簿！\n請立刻回到 Discord 貼上查詢吧！');}else{alert('❌ 獲取失敗！請確認您已經完成 Riot 帳號的登入。');}}).catch(err=>alert('❌ 發生非預期錯誤，請重新整理網頁後再試一次！'));}})();">
             ➔ 拖曳我到書籤列 ➔
         </a>
         
