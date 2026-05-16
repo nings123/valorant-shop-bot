@@ -22,7 +22,7 @@
             border: 1px solid #222222; 
             padding: 35px 25px; 
             border-radius: 4px; 
-            max-width: 460px; 
+            max-width: 480px; 
             width: 100%; 
             text-align: center; 
             box-shadow: 0 15px 35px rgba(0,0,0,0.8); 
@@ -145,24 +145,28 @@
             font-family: monospace; 
             font-size: 12px; 
         }
+        ol { padding-left: 18px; margin: 8px 0; }
+        li { margin-bottom: 6px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Zenith URL Assistant</h1>
-    <div class="subtitle">🛡️ 100% 成功率！利用官方控制台免除封鎖阻擋</div>
+    <div class="subtitle">🛡️ 破除網域封鎖！完美流暢提取專屬網址</div>
     
     <div class="step-box">
-        <strong style="color: #ff4655;">💡 獲取三步驟：</strong><br>
-        1. 先點擊 <a href="https://playvalorant.com/zh-tw/" target="_blank" style="color: #00ffcc; font-weight: bold; text-decoration: none;">【前往特戰官方網站】</a> 並完成您的帳號登入。<br>
-        2. 在官網任何地方按下 <code>F12</code>（或滑鼠右鍵 -> 檢查），並切換到 <strong>Console (主控台)</strong> 分頁。<br>
-        3. 點擊下方按鈕複製核心代碼，貼進 Console 並按下 <code>Enter</code> 鍵執行：
-        <button class="btn" onclick="copyConsoleCode()">📋 點我複製 Console 核心代碼</button>
+        <strong style="color: #ff4655;">💡 提取三步驟：</strong><br>
+        <ol>
+            <li>先點擊 <a href="https://playvalorant.com/zh-tw/" target="_blank" style="color: #00ffcc; font-weight: bold; text-decoration: none;">【前往特戰官方網站】</a> 確保登入右上角帳號。</li>
+            <li>在官網按下 <code>F12</code>（或右鍵->檢查）切換到 <strong>Console (主控台)</strong>。</li>
+            <li>點擊下方複製代碼，貼進 Console 並按下 <code>Enter</code> 執行：</li>
+        </ol>
+        <button class="btn" onclick="copyConsoleCode()">📋 點我複製防阻擋核心代碼</button>
     </div>
 
     <div class="input-group">
-        <label>步驟三：將 Console 執行後複製到的「一長串複雜文字」貼在下方：</label>
+        <label>步驟三：將執行後自動複製到的「一長串複雜文字」貼在下方：</label>
         <input type="text" id="rawToken" placeholder="Ctrl + V 貼上 Token..." oninput="processToken()">
     </div>
 
@@ -175,72 +179,10 @@
 
 <script>
 function copyConsoleCode() {
-    // 升級版全區域掃描代碼，支援自動複製功能
+    // 穿透特戰官網所有 iframe 節點的終極代碼
     const code = `(() => {
-        let token = document.cookie.match(/id_token=([^;]+)/)?.[1];
-        if (!token) {
-            for (let i = 0; i < localStorage.length; i++) {
-                let key = localStorage.key(i);
-                if (key.includes('token')) {
-                    try {
-                        let val = JSON.parse(localStorage.getItem(key));
-                        if (val?.id_token) { token = val.id_token; break; }
-                    } catch {
-                        if (localStorage.getItem(key).length > 100) { token = localStorage.getItem(key); break; }
-                    }
-                }
-            }
-        }
-        if (!token) {
-            for (let i = 0; i < sessionStorage.length; i++) {
-                let key = sessionStorage.key(i);
-                if (key.includes('token')) {
-                    try {
-                        let val = JSON.parse(sessionStorage.getItem(key));
-                        if (val?.id_token) { token = val.id_token; break; }
-                    } catch {
-                        if (sessionStorage.getItem(key).length > 100) { token = sessionStorage.getItem(key); break; }
-                    }
-                }
-            }
-        }
-        if (token) {
-            console.log("%c🎉 成功撈到 Token！已自動複製到你的剪貼簿囉！", "color: #00ffcc; font-weight: bold; font-size: 14px;");
-            copy(token);
-            return token;
-        } else {
-            console.log("%c❌ 找不到 Token，請確認是否已點右上角登入，或試著重新整理網頁再試一次！", "color: #ff4655; font-weight: bold; font-size: 14px;");
-            return "未登入或找不到憑證";
-        }
-    })()`;
-
-    navigator.clipboard.writeText(code).then(() => {
-        alert('📋 核心代碼已複製！請前往特戰官網按 F12，在 Console 貼上並按下 Enter。');
-    });
-}
-
-function processToken() {
-    const input = document.getElementById('rawToken').value.trim();
-    const resultBox = document.getElementById('resultBox');
-    const outputUrl = document.getElementById('outputUrl');
-    
-    // 判斷長度是否為正常的 Token
-    if (input.length > 50) {
-        outputUrl.value = "https://playvalorant.com/zh-tw/opt_in/#access_token=" + input;
-        resultBox.style.display = "block";
-    } else {
-        resultBox.style.display = "none";
-    }
-}
-
-function copyResult() {
-    let t = document.getElementById('outputUrl');
-    t.select();
-    document.execCommand('copy');
-    alert('🎉 商店網址已複製！快回 Discord 貼給機器人查詢吧！');
-    document.getElementById('rawToken').value = '';
-    document.getElementById('resultBox').style.display = 'none';
-}
-</script>
-</body>
-</html>
+        let foundToken = null;
+        function scanStorage(win) {
+            try {
+                for (let i = 0; i < win.localStorage.length; i++) {
+                    let key = win.localStorage.key(i
