@@ -31,7 +31,7 @@
             2. 把下方按鈕<b>重新拖曳</b>到書籤列覆蓋舊的。<br>
             3. 在特戰官網登入後點擊書籤，跳出成功後直接去 Discord 貼上！
         </div>
-        <a class="drag-btn" href="javascript:(function(){const hash=window.location.hash;if(hash.includes('access_token')){let params=new URLSearchParams(hash.replace('#','?'));let token=params.get('access_token');let cleanUrl='https://playvalorant.com/zh-tw/opt_in/#access_token='+token;const el=document.createElement('textarea');el.value=cleanUrl;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 複製成功！\n\n網址已自動保留 zh-tw 並完美縮短！\n請直接回 Discord 貼上送出！');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fzh-tw%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
+        <a class="drag-btn" href="javascript:(function(){const hash=window.location.hash;if(hash.includes('access_token')){let params=new URLSearchParams(hash.replace('#','?'));let token=params.get('access_token');let cleanUrl='https://playvalorant.com/zh-tw/opt_in/#access_token='+token;const el=document.createElement('textarea');el.value=cleanUrl;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 複製成功！\n\n網址已自動相容機器人語系並完美縮短！\n請直接回 Discord 貼上送出！');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
             ➔ 拖曳我到書籤列 ➔
         </a>
     </div>
@@ -57,7 +57,7 @@ function processUrl() {
     let params = new URLSearchParams(hash.replace('#','?'));
     let token = params.get('access_token');
     
-    // 強制保留 zh-tw 並只拼接 access_token
+    // 強制幫群友加上機器人要的 zh-tw，同時把廢話切掉
     let cleanUrl = 'https://playvalorant.com/zh-tw/opt_in/#access_token=' + token;
     
     let el = document.createElement('textarea');
@@ -66,7 +66,7 @@ function processUrl() {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    alert('🎉 轉換並複製成功！\n\n已自動保留 zh-tw 並極致縮短！\n請立刻去 Discord 貼上送出吧！');
+    alert('🎉 轉換並複製成功！\n\n已自動補上 zh-tw 并極致縮短！\n請立刻去 Discord 貼上送出吧！');
 }
 </script>
 
