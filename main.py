@@ -18,7 +18,6 @@ bot = MyBot()
 
 def get_skin_data(uuid):
     try:
-        # 改用最新、最穩定的全球造型全庫 API，修復「未知造型」問題
         res = requests.get("https://valorant-api.com/v1/weapons/skins?language=zh-TW")
         if res.status_code == 200:
             skins = res.json()["data"]
@@ -28,40 +27,48 @@ def get_skin_data(uuid):
                         return skin["displayName"], chroma["displayIcon"]
                 for level in skin["levels"]:
                     if level["uuid"] == uuid:
-                        return skin["displayName"], level["displayIcon"]
+                        return skin["displayName"], level["withonedIcon" if "withonedIcon" in level else "displayIcon"]
     except Exception as e:
         print(f"API解析錯誤: {e}")
     return "未知造型", "https://media.valorant-api.com/v1/playercards/9fb348bc-41a4-91ad-d131-159c865c364f/displayIcon.png"
 
 @bot.tree.command(name="shop", description="查詢你的每日特戰商店")
-@app_commands.describe(entitlement_token="你的 Entitlement Token", access_token="你的 Access Token", user_id="你的 Riot PUID")
+@app_commands.describe(entitlement_token="防空免填", access_token="你的 Access Token", user_id="你的 Riot PUID")
 async def shop(interaction: discord.Interaction, entitlement_token: str = None, access_token: str = None, user_id: str = None):
     
-    # 如果沒輸入 Token，跳出保證能順利登入的安全通道指南
-    if not entitlement_token or not access_token or not user_id:
+    # 💡 這裡請把網址改成你剛剛在 第三步 拿到的 GitHub Pages 專屬網址！
+    MY_WEB_URL = "https://nings123.github.io/valorant-shop-bot/"
+
+    if not access_token or not user_id:
         embed = discord.Embed(
-            title="✨ 每日商店查詢教學",
-            description="為了帳號安全，本群不收集密碼。請用以下純官方、保證不壞的方式取得金鑰：\n\n"
-                        "1. **第一步：先登入官網**\n"
-                        "   請先用電腦瀏覽器開啟並登入 [👉 Riot 官方帳號管理中心](https://account.riotgames.com/)\n"
-                        "   *(請務必確保在這個網頁看到自己的 Riot ID 登入成功喔！)*\n\n"
-                        "2. **第二步：獲取 Access Token & User ID**\n"
-                        "   登入成功後，**不要關閉網頁**，直接在同一個瀏覽器開新分頁，點擊前往這個網址：\n"
-                        "   [👉 點我前往官方安全通道網址](https://auth.riotgames.com/authorize?client_id=riot-client&redirect_uri=http%3A%2F%2Flocalhost%2Fredirect&response_type=token%20id_token&scope=openid%20link%20accounts&nonce=1)\n"
-                        "   • *注意：點過去畫面顯示「localhost 拒絕連線」是完全正常的！*\n"
-                        "   • 請直接看最上方的**網址列**，複製裡面 `access_token=` 後面那一長串亂碼。\n"
-                        "   • 網址列中 `sub=` 後面那串英數數字就是你的 **User ID**。\n\n"
-                        "3. **第三步：獲取 Entitlement**\n"
-                        "   同樣在同個瀏覽器再開一個新分頁，前往以下網址：\n"
-                        "   [👉 點我前往 Entitlement 網址](https://entitlements.auth.riotgames.com/api/v1/entitlements/token)\n"
-                        "   • 畫面中 `" '"entitlements_token":"...' "` 雙引號裡面的長代碼就是 **Entitlement**。\n\n"
-                        "4. **回 Discord 查詢**：再次輸入 `/shop` 並把這三串東西貼上，就能秒出你的簡約風商店卡片啦！",
+            title="✨ Zenith 每日商店查詢教學",
+            description=f"為了帳號安全，本群不收集密碼。請點擊下方連結一鍵獲取：\n\n"
+                        f"[👉 點我前往 Zenith 專屬金鑰獲取網頁]({MY_WEB_URL})\n\n"
+                        f"1. 點擊網頁中的「官方授權登入」並完成登入。\n"
+                        f"2. 登入後網頁會直接彈出代碼，點擊即可一鍵複製。\n"
+                        f"3. 回到 Discord 輸入 `/shop` 填入對應欄位即可查詢！",
             color=0xFFFFFF
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
     await interaction.response.defer(ephemeral=True)
+
+    # 2026 最新機制：其實只要有 Access Token，機器人就能自己去跟 Riot 換取 Entitlement！群友連第三個網址都不用開了！
+    try:
+        ent_res = requests.post(
+            "https://entitlements.auth.riotgames.com/api/v1/entitlements/token",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={}
+        )
+        if ent_res.status_code == 200:
+            entitlement_token = ent_res.json()["entitlements_token"]
+        else:
+            await interaction.followup.send("❌ 憑證自動換取失敗，請重新前往網頁登入獲取新 Token！")
+            return
+    except:
+        await interaction.followup.send("❌ 連線驗證伺服器失敗。")
+        return
 
     headers = {
         "Authorization": f"Bearer {access_token}",
@@ -87,7 +94,7 @@ async def shop(interaction: discord.Interaction, entitlement_token: str = None, 
                 
             await interaction.followup.send(embeds=embeds)
         else:
-            await interaction.followup.send(f"❌ 查詢失敗，代碼可能打錯或過期了！(錯誤碼: {res.status_code})")
+            await interaction.followup.send(f"❌ 查詢失敗，Token 可能過期了！(錯誤碼: {res.status_code})")
     except Exception as e:
         await interaction.followup.send(f"❌ 系統發生錯誤：{str(e)}")
 
