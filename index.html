@@ -6,8 +6,8 @@
     <title>Zenith Token 獲取助手</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #0b0e14;
+            font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0b0b0b;
             color: #ffffff;
             display: flex;
             justify-content: center;
@@ -18,70 +18,88 @@
             box-sizing: border-box;
         }
         .container {
-            background-color: #161a23;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            max-width: 550px;
+            background-color: #111111;
+            border: 1px solid #222222;
+            padding: 40px 30px;
+            border-radius: 4px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            max-width: 500px;
             width: 100%;
             text-align: center;
         }
-        h1 { font-size: 24px; margin-bottom: 10px; color: #ffffff; }
-        p { color: #a0aab8; font-size: 14px; line-height: 1.6; margin-bottom: 25px; }
+        h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; color: #ffffff; text-transform: uppercase; }
+        .subtitle { color: #888888; font-size: 13px; margin-bottom: 30px; letter-spacing: 1px; }
+        .step-card {
+            background-color: #161616;
+            border: 1px solid #1c1c1c;
+            padding: 20px;
+            text-align: left;
+            margin-bottom: 20px;
+            border-radius: 2px;
+        }
+        .step-num { font-size: 12px; color: #ff4655; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; display: block; letter-spacing: 1px; }
+        .step-text { color: #cccccc; font-size: 14px; line-height: 1.6; }
         .btn {
             display: inline-block;
             width: 100%;
-            padding: 14px;
-            background-color: #ff4655;
-            color: white;
+            padding: 15px;
+            background-color: #ffffff;
+            color: #000000;
             text-decoration: none;
-            font-weight: bold;
-            border-radius: 6px;
-            margin-bottom: 15px;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+            border-radius: 2px;
             box-sizing: border-box;
-            transition: background 0.2s;
-            text-align: center;
-            font-size: 15px;
+            transition: all 0.2s ease;
             border: none;
             cursor: pointer;
+            text-transform: uppercase;
         }
-        .btn:hover { background-color: #e53e4b; }
-        .btn-secondary { background-color: #2b313d; color: #a0aab8; }
-        .btn-secondary:hover { background-color: #363e4d; color: #ffffff; }
-        .step { text-align: left; background: #1f2530; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
-        .step-title { font-weight: bold; margin-bottom: 5px; color: #ffffff; font-size: 15px; }
-        .step-desc { color: #a0aab8; font-size: 13px; line-height: 1.5; }
-        code { background: #0b0e14; padding: 2px 6px; border-radius: 4px; color: #ff4655; font-family: monospace; }
-        .warning-text { color: #ffbc00; font-size: 12px; margin-top: 5px; display: block; }
+        .btn:hover { background-color: #ff4655; color: #ffffff; }
+        .btn-secondary { background-color: #1c1c1c; color: #888888; border: 1px solid #2c2c2c; margin-bottom: 15px; }
+        .btn-secondary:hover { border-color: #ffffff; color: #ffffff; background-color: #1c1c1c; }
+        code { background: #000000; padding: 3px 6px; border-radius: 2px; color: #ff4655; font-family: monospace; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>✨獲取助手</h1>
-    <p>為了保障您的帳號安全，本工具不索取帳密。請依照下方步驟獲取商店查詢金鑰。</p>
+    <h1>Zenith Token Assistant</h1>
+    <div class="subtitle">特戰每日商店查詢金鑰安全獲取工具</div>
     
-    <div class="step">
-        <div class="step-title">1️⃣ 第一步：登入 Riot 官網</div>
-        <div class="step-desc">請先點擊下方按鈕登入官網。確認看到自己的 Riot ID 即可（若已登入可跳過）。</div>
+    <div class="step-card">
+        <span class="step-num">Step 01</span>
+        <div class="step-text">請先點擊下方按鈕登入 Riot 官方網站（若瀏覽器已登入過可直接跳過）。</div>
     </div>
-    <a href="https://account.riotgames.com/" target="_blank" class="btn btn-secondary">👉 前往 Riot 官方登入中心</a>
+    <a href="https://account.riotgames.com/" target="_blank" class="btn btn-secondary">前往 Riot 官方登入中心</a>
 
-    <div class="step">
-        <div class="step-title">2️⃣ 第二步：獲取安全金鑰網址</div>
-        <div class="step-desc">
-            登入後回來點擊下方紅色按鈕。在新分頁打開後，<b>畫面會顯示「404 PAGE NOT FOUND」</b>。<br>
-            <span class="warning-text">⚠️ 註：看到 404 是完全正常的！請不要關閉網頁！</span>
-            請直接將那個 404 網頁最上方網址列的<b>「那一整條超長網址」全部複製起來</b>。
-        </div>
+    <div class="step-card">
+        <span class="step-num">Step 02</span>
+        <div class="step-text">點擊下方按鈕下載金鑰獲取腳本。下載後<b>直接雙擊執行</b>，它會自動為您在瀏覽器抓取安全金鑰，並直接跳出視窗讓您一鍵複製網址！</div>
     </div>
-    <a href="https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1" target="_blank" class="btn">🔗 點我獲取授權網址 (會顯示404)</a>
+    <button onclick="downloadScript()" class="btn">下載一鍵獲取腳本</button>
 
-    <div class="step">
-        <div class="step-title">3️⃣ 第三步：回到 Discord 查詢商店</div>
-        <div class="step-desc">回到 Discord 頻道輸入 <code>/shop</code>，並把剛才複製的整條網址直接貼進 <code>access_token</code> 欄位送出即可！</div>
+    <div class="step-card" style="margin-top: 25px; margin-bottom: 0;">
+        <span class="step-num">Step 03</span>
+        <div class="step-text">回到 Discord 輸入 <code>/shop</code>，並將複製的整條網址直接貼進 <code>access_token</code> 欄位即可秒出商店！</div>
     </div>
 </div>
+
+<script>
+    function downloadScript() {
+        // 利用 PowerShell 官方原生快取通道，在使用者本地端完全無痛抓取 Token
+        const scriptText = `@echo off\nchcp 65001 >nul\ntitle Zenith Token Grabber\necho 🚀 正在安全獲取您的特戰商店 Token...\npowershell -Command "$url = 'https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1'; $ie = New-Object -ComObject InternetExplorer.Application; $ie.Navigate($url); while($ie.Busy -or $ie.ReadyState -ne 4){Start-Sleep -m 100}; $finalUrl = $ie.LocationURL; $ie.Quit(); if($finalUrl -match 'access_token='){ Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.Clipboard]::SetText($finalUrl); [System.Windows.Forms.MessageBox]::Show('🎉 成功獲取安全金鑰！\\n\\n網址已自動複製到您的剪貼簿！\\n請立刻回到 Discord 貼上查詢吧！', 'Zenith 助手'); } else { [System.Windows.Forms.MessageBox]::Show('❌ 獲取失敗！請確認您是否已經先在網頁登入 Riot 帳號。', 'Zenith 錯誤'); }"\nexit`;
+        
+        const blob = new Blob([scriptText], { type: 'text/plain' });
+        const element = document.createElement('a');
+        element.href = URL.createObjectURL(blob);
+        element.download = "Get_Zenith_Token.bat";
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    }
+</script>
 
 </body>
 </html>
