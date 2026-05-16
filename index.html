@@ -97,10 +97,10 @@
     <div class="step-card">
         <span class="step-num">Step 02</span>
         <div class="step-text">
-            用滑鼠按住下方<b>紅色虛線按鈕</b>，直接【<b>拖曳到書籤列</b>】放開（舊的請一定要按右鍵刪除喔！）。
+            用滑鼠按住下方<b>紅色虛線按鈕</b>，直接【<b>拖曳到書籤列</b>】放開（請務必先將舊的書籤刪除）。
         </div>
         
-        <a class="drag-btn" href="javascript:(function(){const host=window.location.hostname;const hash=window.location.hash;if(host==='playvalorant.com'&&hash.includes('access_token')){let cleanUrl=window.location.href.replace(/\/zh-tw\/?/i,'/');const el=document.createElement('textarea');el.value=cleanUrl;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 獲取成功！\n\n網址金鑰已自動過濾並複製到您的剪貼簿！\n現在回 Discord 貼上絕對可以查詢囉！');}else if(host!=='playvalorant.com'){alert('❌ 請先前往特戰英豪官網分頁！\n\n點擊確定後將自動幫您開啟正確網頁，到該網頁後再點一次這個書籤即可！');window.open('https://playvalorant.com/zh-tw/','_blank');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
+        <a class="drag-btn" href="javascript:(function(){const host=window.location.hostname;const path=window.location.pathname;const hash=window.location.hash;if(host==='playvalorant.com'&&hash.includes('access_token')){let cleanUrl=window.location.href.replace(/\/zh-tw\/?/i,'/');const el=document.createElement('textarea');el.value=cleanUrl;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 獲取成功！\n\n標準格式金鑰已複製到剪貼簿！\n快回 Discord 貼上查詢吧！');}else if(host!=='playvalorant.com'){alert('❌ 請先前往特戰英豪官網分頁！\n\n點擊確定後將自動幫您開啟正確網頁，到該網頁後再點一次這個書籤即可！');window.open('https://playvalorant.com/zh-tw/','_blank');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
             ➔ 拖曳我到書籤列 ➔
         </a>
         
@@ -110,7 +110,7 @@
     <div class="step-card" style="margin-bottom: 0;">
         <span class="step-num">Step 03</span>
         <div class="step-text">
-            登入後在<b>特戰官網分頁</b>點一下這個書籤，網頁會自動跳轉並彈出「獲取成功」，直接去 Discord 貼上就完成了！
+            登入後在<b>特戰官網分頁</b>點一下這個書籤，網頁會自動跳轉獲取標準格式網址，並彈出「獲取成功」，這時直接去 Discord 貼上即可！
         </div>
     </div>
 </div>
