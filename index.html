@@ -25,24 +25,24 @@
     <div class="subtitle">特戰每日商店金鑰極速獲取工具</div>
     
     <div class="step-card">
-        <span class="step-num">方法一：全安全編碼相容書籤</span>
+        <span class="step-num">方法一：雙重相容無痛書籤</span>
         <div class="step-text">
             1. 顯示瀏覽器書籤列（Ctrl+Shift+B）。<br>
             2. 把下方按鈕<b>重新拖曳</b>到書籤列覆蓋舊的。<br>
             3. 在特戰官網登入後點擊書籤，跳出成功後直接去 Discord 貼上！
         </div>
-        <a class="drag-btn" href="javascript:(function(){const hash=window.location.hash;if(hash.includes('access_token')){let params=new URLSearchParams(hash.replace('#','?'));let token=params.get('access_token');let cleanUrl='https://playvalorant.com/zh-tw/opt_in/#access_token='+encodeURIComponent(token);const el=document.createElement('textarea');el.value=cleanUrl;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 複製成功！\n\n網址已完成安全編碼並完美縮短！\n請直接回 Discord 貼上送出！處理');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
+        <a class="drag-btn" href="javascript:(function(){const hash=window.location.hash;if(hash.includes('access_token')){let token='';if(typeof URLSearchParams!=='undefined'){let params=new URLSearchParams(hash.replace('#','?'));token=params.get('access_token');}if(!token){let match=hash.match(/access_token=([^&]+)/);if(match)token=match[1];}if(token){let cleanUrl='https://playvalorant.com/zh-tw/opt_in/#access_token='+token;const el=document.createElement('textarea');el.value=cleanUrl;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 複製成功！\n\n網址已還原為原汁原味標準短網址！\n請直接回 Discord 貼上送出！');}else{alert('未能成功獲取 Token，請重新登入再試一次！');}}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
             ➔ 拖曳我到書籤列 ➔
         </a>
     </div>
 
     <div class="step-card">
-        <span class="step-num">方法二：長網址精準防漏裁剪框</span>
+        <span class="step-num">方法二：長網址乾淨裁剪框</span>
         <div class="step-text">
             如果點擊書籤被瀏覽器擋住，請把跳轉後那一長串帶有 404 的長網址複製，貼到下方格子裡：
         </div>
         <textarea id="inputUrl" placeholder="請在此貼上官方那一長串長網址..."></textarea>
-        <button class="tool-btn" onclick="processUrl()">➔ 一鍵轉換為完美商店短網址</button>
+        <button class="tool-btn" onclick="processUrl()">➔ 一鍵轉換為標準短網址</button>
     </div>
 </div>
 
@@ -58,8 +58,10 @@ function processUrl() {
     let endIdx = input.indexOf('&', startIdx);
     let token = (endIdx !== -1) ? input.substring(startIdx, endIdx) : input.substring(startIdx);
     
-    // 使用 encodeURIComponent 確保 Token 內的所有亂碼字元在 Discord 傳輸時不失真
-    let cleanUrl = 'https://playvalorant.com/zh-tw/opt_in/#access_token=' + encodeURIComponent(token);
+    // 移除可能殘留的 url encode 符號，還原純粹亂碼，確保機器人後台看得懂
+    token = decodeURIComponent(token);
+    
+    let cleanUrl = 'https://playvalorant.com/zh-tw/opt_in/#access_token=' + token;
     
     let el = document.createElement('textarea');
     el.value = cleanUrl;
@@ -67,7 +69,7 @@ function processUrl() {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    alert('🎉 轉換並複製成功！\n\n網址已強制安全加密並縮短，請立刻去 Discord 貼上送出！');
+    alert('🎉 轉換並複製成功！\n\n已還原為最標準的官方短網址，請立刻去 Discord 貼上送出！');
 }
 </script>
 
