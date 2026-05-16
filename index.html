@@ -3,95 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenith 特戰極速登入助手</title>
+    <title>Zenith 特戰網址過濾助手</title>
     <style>
         body { font-family: "Segoe UI", Arial, sans-serif; background-color: #0b0b0b; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-        .container { background-color: #111111; border: 1px solid #222222; padding: 35px 25px; border-radius: 4px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
+        .container { background-color: #111111; border: 1px solid #222222; padding: 35px 25px; border-radius: 4px; max-width: 450px; width: 100%; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
         h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; color: #ff4655; }
         .subtitle { color: #888888; font-size: 13px; margin-bottom: 25px; }
         .input-group { text-align: left; margin-bottom: 15px; }
-        label { display: block; font-size: 12px; color: #aaaaaa; margin-bottom: 5px; font-weight: 600; }
-        input { width: 100%; padding: 12px; background-color: #161616; border: 1px solid #333; color: #fff; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        label { display: block; font-size: 12px; color: #aaaaaa; margin-bottom: 8px; font-weight: 600; line-height: 1.4; }
+        input { width: 100%; padding: 12px; background-color: #161616; border: 1px solid #333; color: #fff; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
         input:focus { border-color: #ff4655; outline: none; }
-        .btn { display: block; width: 100%; padding: 12px 0; background-color: #ff4655; color: #ffffff; font-weight: 700; font-size: 15px; border-radius: 4px; cursor: pointer; border: none; margin-top: 20px; width: 100%; }
+        .btn { display: block; width: 100%; padding: 12px 0; background-color: #ff4655; color: #ffffff; font-weight: 700; font-size: 15px; border-radius: 4px; cursor: pointer; border: none; margin-top: 20px; }
         .btn:hover { background-color: #dc3d4b; }
-        .btn:disabled { background-color: #555; cursor: not-allowed; }
-        .result-box { margin-top: 20px; background: #000; padding: 15px; border-radius: 4px; display: none; text-align: left; }
+        .result-box { margin-top: 20px; background: #000; padding: 15px; border-radius: 4px; display: none; text-align: left; border: 1px solid #222; }
         .result-title { color: #ff4655; font-size: 12px; font-weight: bold; margin-bottom: 5px; }
-        textarea { width: 100%; height: 80px; background: #111; border: 1px solid #222; color: #00ffcc; font-size: 11px; resize: none; word-break: break-all; margin-top: 5px; padding: 10px; box-sizing: border-box; border-radius: 4px; }
-        .status-msg { color: #ffcc00; font-size: 13px; margin-top: 10px; text-align: left; min-height: 20px; line-height: 1.5; }
+        textarea { width: 100%; height: 80px; background: #111; border: 1px solid #222; color: #00ffcc; font-size: 11px; resize: none; word-break: break-all; margin-top: 5px; padding: 10px; box-sizing: border-box; border-radius: 4px; font-family: monospace; }
+        .step-box { background: #161616; padding: 15px; border-radius: 4px; border: 1px dashed #444; margin-bottom: 20px; }
+        .step-link { display: inline-block; color: #00ffcc; text-decoration: none; font-weight: bold; margin-top: 5px; font-size: 14px; }
+        .step-link:hover { text-decoration: underline; color: #00ffaa; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Zenith Login Assistant</h1>
-    <div class="subtitle">放棄麻煩的書籤！輸入帳密一鍵極速獲取網址</div>
+    <h1>Zenith URL Assistant</h1>
+    <div class="subtitle">安全防封鎖！100% 成功獲取專屬商店 Token 網址</div>
     
     <div id="loginForm">
-        <div class="input-group">
-            <label>RIOT 登入帳號 (Username)</label>
-            <input type="text" id="username" placeholder="請輸入遊戲登入帳號...">
+        <div class="step-box">
+            <span style="font-size: 13px; color: #ccc;">第一步：請先點擊下方連結前往 Riot 官方登入</span><br>
+            <a class="step-link" href="https://auth.riotgames.com/api/v1/authorization?client_id=play-valorant-web-prod&response_type=token%20id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid%20link%20ban&nonce=1" target="_blank">➔ 點我前往 Riot 官方安全登入</a>
         </div>
+
         <div class="input-group">
-            <label>RIOT 登入密碼 (Password)</label>
-            <input type="password" id="password" placeholder="請輸入遊戲登入密碼...">
+            <label>第二步：登入成功後網頁會變空白，請把瀏覽器最上方「整條長網址」複製，貼在下方：</label>
+            <input type="text" id="riotUrl" placeholder="https://playvalorant.com/opt_in/#access_token=..." oninput="convertUrl()">
         </div>
-        <button class="btn" id="submitBtn" onclick="startAuth()">➔ 一鍵安全獲取商店網址</button>
-        <div class="status-msg" id="statusMsg"></div>
     </div>
 
     <div class="result-box" id="resultBox">
-        <div class="result-title">🎉 成功生成！請複製下方整條網址貼回 Discord：</div>
+        <div class="result-title">🎉 成功提取 Token 網址！請複製下方整條貼回 Discord 查商店：</div>
         <textarea id="outputUrl" readonly></textarea>
-        <button class="btn" style="background:#333; margin-top:10px;" onclick="copyResult()">一鍵複製網址</button>
+        <button class="btn" style="background:#222; color: #00ffcc; border: 1px solid #333; margin-top:10px;" onclick="copyResult()">一鍵複製商店網址</button>
     </div>
 </div>
 
 <script>
-const BACKEND_URL = "https://zenith-auth-daily.onrender.com";
-
-async function startAuth() {
-    const user = document.getElementById('username').value.trim();
-    const pass = document.getElementById('password').value.trim();
-    const btn = document.getElementById('submitBtn');
-    const statusMsg = document.getElementById('statusMsg');
+function convertUrl() {
+    const input = document.getElementById('riotUrl').value.trim();
+    const resultBox = document.getElementById('resultBox');
+    const outputUrl = document.getElementById('outputUrl');
     
-    if(!user || !pass) { alert('請填寫帳號和密碼！'); return; }
-    
-    btn.disabled = true;
-    statusMsg.innerText = "⏳ 正在啟動後端轉接橋樑...";
-
-    try {
-        let initRes = await fetch(`${BACKEND_URL}/api/auth/init`, { method: "POST" });
-        statusMsg.innerText = "🔑 正在將憑證送往 Riot 伺服器驗證...";
-
-        let loginRes = await fetch(`${BACKEND_URL}/api/auth/login`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username: user, password: pass })
-        });
-        
-        let data = await loginRes.json();
-
-        if (data.response && data.response.parameters && data.response.parameters.uri) {
-            let originalUri = data.response.parameters.uri;
-            let match = originalUri.match(/access_token=([^&]+)/);
-            if (match) {
-                document.getElementById('outputUrl').value = "https://playvalorant.com/zh-tw/opt_in/#access_token=" + match[1];
-                document.getElementById('resultBox').style.display = "block";
-                document.getElementById('loginForm').style.display = "none";
-                statusMsg.innerText = "";
-            }
-        } else {
-            alert("登入失敗：請檢查帳密是否正確。若你有開啟二步驟驗證，此自動網頁不支援，請改用手動或書籤方式。");
-            btn.disabled = false;
-            statusMsg.innerText = "❌ 驗證失敗";
-        }
-    } catch (err) {
-        alert("連線發生錯誤，請確認後端狀態！");
-        btn.disabled = false;
-        statusMsg.innerText = "❌ 連線失敗";
+    let match = input.match(/access_token=([^&]+)/);
+    if (match) {
+        outputUrl.value = "https://playvalorant.com/zh-tw/opt_in/#access_token=" + match[1];
+        resultBox.style.display = "block";
+    } else {
+        resultBox.style.display = "none";
     }
 }
 
@@ -99,7 +67,7 @@ function copyResult() {
     let t = document.getElementById('outputUrl');
     t.select();
     document.execCommand('copy');
-    alert('🎉 複製成功！快回 Discord 貼上吧！');
+    alert('🎉 網址已複製到剪貼簿！快回 Discord 貼上吧！');
 }
 </script>
 </body>
