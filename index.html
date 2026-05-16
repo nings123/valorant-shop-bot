@@ -25,24 +25,24 @@
     <div class="subtitle">特戰每日商店金鑰極速獲取工具</div>
     
     <div class="step-card">
-        <span class="step-num">方法一：全新一代無痛書籤</span>
+        <span class="step-num">方法一：保留語系＋極致防吃字書籤</span>
         <div class="step-text">
             1. 顯示瀏覽器書籤列（Ctrl+Shift+B）。<br>
             2. 把下方按鈕<b>重新拖曳</b>到書籤列覆蓋舊的。<br>
             3. 在特戰官網登入後點擊書籤，跳出成功後直接去 Discord 貼上！
         </div>
-        <a class="drag-btn" href="javascript:(function(){const hash=window.location.hash;if(hash.includes('access_token')){let params=new URLSearchParams(hash.replace('#','?'));let token=params.get('access_token');let cleanUrl=window.location.origin+window.location.pathname+'#access_token='+token;const el=document.createElement('textarea');el.value=cleanUrl;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 複製成功！\n\n網址已完成「極致縮短防吃字」，且符合機器人白名單！\n請直接回 Discord 貼上送出！');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri='+encodeURIComponent(window.location.href)+'&scope=openid+link+ban&nonce=1');}})();">
+        <a class="drag-btn" href="javascript:(function(){const hash=window.location.hash;if(hash.includes('access_token')){let params=new URLSearchParams(hash.replace('#','?'));let token=params.get('access_token');let cleanUrl='https://playvalorant.com/zh-tw/opt_in/#access_token='+token;const el=document.createElement('textarea');el.value=cleanUrl;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 複製成功！\n\n網址已自動保留 zh-tw 並完美縮短！\n請直接回 Discord 貼上送出！');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fzh-tw%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
             ➔ 拖曳我到書籤列 ➔
         </a>
     </div>
 
     <div class="step-card">
-        <span class="step-num">方法二：手動防呆裁剪（如果書籤被瀏覽器擋住）</span>
+        <span class="step-num">方法二：長網址防呆裁剪框</span>
         <div class="step-text">
-            如果點擊書籤沒反應，請把跳轉後那一長串帶有 404 或 zh-tw 的長網址複製，貼到下方格子裡：
+            如果點擊書籤被瀏覽器擋住，請把跳轉後那一長串帶有 404 的長網址複製，貼到下方格子裡：
         </div>
         <textarea id="inputUrl" placeholder="請在此貼上官方那一長串長網址..."></textarea>
-        <button class="tool-btn" onclick="processUrl()">➔ 一鍵轉換成 Zenith 專用短網址</button>
+        <button class="tool-btn" onclick="processUrl()">➔ 一鍵轉換為完美商店短網址</button>
     </div>
 </div>
 
@@ -57,8 +57,8 @@ function processUrl() {
     let params = new URLSearchParams(hash.replace('#','?'));
     let token = params.get('access_token');
     
-    // 用當前 GitHub 網址拼裝
-    let cleanUrl = window.location.origin + window.location.pathname + '#access_token=' + token;
+    // 強制保留 zh-tw 並只拼接 access_token
+    let cleanUrl = 'https://playvalorant.com/zh-tw/opt_in/#access_token=' + token;
     
     let el = document.createElement('textarea');
     el.value = cleanUrl;
@@ -66,7 +66,7 @@ function processUrl() {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    alert('🎉 轉換並複製成功！\n\n已自動去除 zh-tw 並極致縮短！\n請立刻去 Discord 貼上送出吧！');
+    alert('🎉 轉換並複製成功！\n\n已自動保留 zh-tw 並極致縮短！\n請立刻去 Discord 貼上送出吧！');
 }
 </script>
 
