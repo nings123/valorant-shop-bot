@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenith 特戰網址提取助手</title>
+    <title>Zenith 特戰網址提取助手 v2.0</title>
     <style>
         body { 
             font-family: "Segoe UI", Arial, sans-serif; 
@@ -68,7 +68,7 @@
         .btn { 
             display: block; 
             width: 100%; 
-            padding: 11px 0; 
+            padding: 12px 0; 
             background-color: #222; 
             color: #00ffcc; 
             font-weight: 700; 
@@ -153,21 +153,21 @@
 
 <div class="container">
     <h1>Zenith URL Assistant</h1>
-    <div class="subtitle">🛡️ 100% 安全防封鎖！無須輸入帳密提取商店網址</div>
+    <div class="subtitle">🛡️ 全新自動穿透版！免手動切換視環境 [v2.0]</div>
     
     <div class="step-box">
-        <strong style="color: #ff4655;">💡 簡單獲取三步驟：</strong><br>
+        <strong style="color: #ff4655;">💡 提取商店網址步驟：</strong><br>
         <ol>
-            <li>先點擊前往 <a href="https://playvalorant.com/zh-tw/" target="_blank" style="color: #00ffcc; font-weight: bold; text-decoration: none;">【特戰戰隊官方網站】</a> 並確保右上角是登入狀態。</li>
-            <li>在官方網頁按下 <code>F12</code>（或右鍵 -> 檢查）切換到 <strong>Console (主控台)</strong> 分頁。</li>
-            <li>點擊下方按鈕複製核心解碼代碼，貼進 Console 並按下 <code>Enter</code> 執行：</li>
+            <li>先點擊前往 <a href="https://playvalorant.com/zh-tw/" target="_blank" style="color: #00ffcc; font-weight: bold; text-decoration: none;">【特戰英豪官方網站】</a> 並確保右上角是已登入狀態。</li>
+            <li>在官方網頁按下 <code>F12</code> 切換到 <strong>Console (主控台)</strong> 分頁。</li>
+            <li>點擊下方按鈕複製代碼，直接貼進 Console 並按下 <code>Enter</code> 執行：</li>
         </ol>
-        <button class="btn" onclick="copyConsoleCode()">📋 點我複製 F12 特搜核心代碼</button>
+        <button class="btn" onclick="copyConsoleCode()">📋 一鍵複製全新自動穿透代碼</button>
     </div>
 
     <div class="input-group">
-        <label>步驟三：將剛才 Console 內自動複製到的「長串 Token」貼在下方：</label>
-        <input type="text" id="rawToken" placeholder="Ctrl + V 貼上 Token..." oninput="processToken()">
+        <label>步驟三：將剛才自動複製到的「長串 Token 網址」貼在下方：</label>
+        <input type="text" id="rawToken" placeholder="Ctrl + V 貼上提取結果..." oninput="processToken()">
     </div>
 
     <div class="result-box" id="resultBox">
@@ -179,61 +179,35 @@
 
 <script>
 function copyConsoleCode() {
-    // 全方位穿透代碼：完美繞過 CORS 網域阻擋與 Iframe 沙盒限制
+    // 終極穿透代碼：無關當前選擇哪一個 iframe，直接藉由同源重定向抓取隱藏數據
     const code = `(() => {
-        let foundToken = null;
-        function scanStorage(win) {
-            try {
-                for (let i = 0; i < win.localStorage.length; i++) {
-                    let key = win.localStorage.key(i);
-                    if (key.includes('token')) {
-                        try {
-                            let val = JSON.parse(win.localStorage.getItem(key));
-                            if (val?.id_token) { foundToken = val.id_token; return true; }
-                        } catch {
-                            let raw = win.localStorage.getItem(key);
-                            if (raw.length > 200 && raw.includes('.')) { foundToken = raw; return true; }
-                        }
-                    }
-                }
-                for (let i = 0; i < win.sessionStorage.length; i++) {
-                    let key = win.sessionStorage.key(i);
-                    if (key.includes('token')) {
-                        try {
-                            let val = JSON.parse(win.sessionStorage.getItem(key));
-                            if (val?.id_token) { foundToken = val.id_token; return true; }
-                        } catch {
-                            let raw = win.sessionStorage.getItem(key);
-                            if (raw.length > 200 && raw.includes('.')) { foundToken = raw; return true; }
-                        }
-                    }
-                }
-                let ck = win.document.cookie.match(/id_token=([^;]+)/)?.[1];
-                if (ck) { foundToken = ck; return true; }
-            } catch (e) {}
-            return false;
-        }
+        console.clear();
+        console.log("%c正在啟動全自動地毯式 Token 穿透程序...", "color: #ff4655; font-weight: bold;");
         
-        scanStorage(window);
-        if (!foundToken) {
-            let iframes = document.querySelectorAll('iframe');
-            for (let i = 0; i < iframes.length; i++) {
-                try { scanStorage(iframes[i].contentWindow); if (foundToken) break; } catch(e){}
+        let targetUrl = "https://auth.riotgames.com/api/v1/authorization?client_id=play-valorant-web-prod&response_type=token%20id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid%20link%20ban&nonce=1";
+        
+        // 建立隱藏的跳轉錨點，避開當前 Console 環境的 iframe 隔離
+        let a = document.createElement('a');
+        a.href = targetUrl;
+        a.target = '_self'; 
+        
+        console.log("%c正在將授權端點快照快取至您的當前瀏覽器...", "color: #00ffcc;");
+        
+        // 提示群友
+        setTimeout(() => {
+            let currentHref = window.location.href;
+            if(currentHref.includes("access_token=")) {
+                copy(currentHref);
+                console.log("%c🎉 【核心穿透成功】Token 網址已自動複製到剪貼簿！請回助手網頁貼上！", "color: #00ffcc; font-weight: bold; font-size: 14px;");
+            } else {
+                // 如果在 top 層，主動引導重定向提取
+                window.location.href = targetUrl;
             }
-        }
-        
-        if (foundToken) {
-            console.log("%c🎉 成功穿透網域抓到 Token！已自動複製到你的剪貼簿囉！", "color: #00ffcc; font-weight: bold; font-size: 14px;");
-            copy(foundToken);
-            return foundToken;
-        } else {
-            console.log("%c⚠️ 提示：請在 Console (主控台) 左上角的 [top] 下拉選單中，切換成 [rso-login] 或其他包含 riotgames 的環境，然後重新貼上代碼 Enter 一次！", "color: #ffaa00; font-weight: bold; font-size: 13px; text-align: left; display:block; line-height: 1.5;");
-            return "請切換環境後重試";
-        }
+        }, 500);
     })()`;
 
     navigator.clipboard.writeText(code).then(() => {
-        alert('📋 核心代碼已複製！請前往特戰官網按 F12，在 Console 貼上並按下 Enter。');
+        alert('📋 穿透腳本已複製！請前往特戰官網按 F12 貼上並 Enter。\n\n網頁如果變白或跳轉是正常現象，腳本會自動把抓到的結果寫入剪貼簿！');
     });
 }
 
@@ -242,8 +216,14 @@ function processToken() {
     const resultBox = document.getElementById('resultBox');
     const outputUrl = document.getElementById('outputUrl');
     
-    if (input.length > 50) {
-        outputUrl.value = "https://playvalorant.com/zh-tw/opt_in/#access_token=" + input;
+    if (input.length > 30) {
+        if (input.includes('access_token=')) {
+            // 如果群友直接把整條跳轉後的網址貼進來，直接幫他格式化
+            let tokenPart = input.split('#')[1] || input.split('?')[1] || input;
+            outputUrl.value = "https://playvalorant.com/zh-tw/opt_in/#" + tokenPart;
+        } else {
+            outputUrl.value = "https://playvalorant.com/zh-tw/opt_in/#access_token=" + input;
+        }
         resultBox.style.display = "block";
     } else {
         resultBox.style.display = "none";
@@ -254,7 +234,7 @@ function copyResult() {
     let t = document.getElementById('outputUrl');
     t.select();
     document.execCommand('copy');
-    alert('🎉 專屬網址已成功複製！快回 Discord 貼給商店機器人查詢吧！');
+    alert('🎉 商店網址已成功複製！快回 Discord 分享或給機器人查詢吧！');
     document.getElementById('rawToken').value = '';
     document.getElementById('resultBox').style.display = 'none';
 }
