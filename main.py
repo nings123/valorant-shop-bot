@@ -6,7 +6,6 @@ import re
 import base64
 import json
 
-# 從環境變數讀取 Bot Token
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
 class MyBot(discord.Client):
@@ -21,9 +20,8 @@ bot = MyBot()
 
 @bot.event
 async def on_ready():
-    print(f"🤖 機器人 {bot.user} 已上線，超完美教學型商店查詢就緒！")
+    print(f"🤖 {bot.user} 已上線！專屬網頁版商店查詢就緒！")
 
-# 獲取武器皮膚資料的輔助函式
 def get_skin_data(uuid):
     try:
         res = requests.get("https://valorant-api.com/v1/weapons/skins?language=zh-TW")
@@ -31,25 +29,21 @@ def get_skin_data(uuid):
             skins = res.json()["data"]
             for skin in skins:
                 for chroma in skin["chromas"]:
-                    if chroma["uuid"] == uuid:
-                        return skin["displayName"], chroma["displayIcon"]
+                    if chroma["uuid"] == uuid: return skin["displayName"], chroma["displayIcon"]
                 for level in skin["levels"]:
-                    if level["uuid"] == uuid:
-                        return skin["displayName"], level["displayIcon"]
-    except Exception as e:
-        print(f"⚠️ API解析錯誤: {e}")
+                    if level["uuid"] == uuid: return skin["displayName"], level["displayIcon"]
+    except: pass
     return "未知造型", "https://media.valorant-api.com/v1/playercards/9fb348bc-41a4-91ad-d131-159c865c364f/displayIcon.png"
 
-# Discord 斜線指令：/shop (把兩格都改成 = None，變成選填)
-@bot.tree.command(name="shop", description="查詢你的每日特戰商店 (留空發送可看獲取教學)")
+@bot.tree.command(name="shop", description="查詢你的每日特戰商店")
 @app_commands.describe(
-    access_token="直接貼上獲取到的『整條完整長網址』，第一次使用請直接留空送出看教學", 
-    user_id="此欄位『完全不用填』，留空即可！"
+    access_token="貼上從 Zenith 助手網頁獲取到的『整條長網址』", 
+    user_id="此欄位完全不用填，留空即可！"
 )
 async def shop(interaction: discord.Interaction, access_token: str = None, user_id: str = None):
     
-    # 【自動解析機制】如果群友有填網址，後端自動切開
-    if access_token and ("access_token=" in access_token or "login.live.com" in access_token):
+    # 自動解析群友丟進來的整條網址
+    if access_token and ("access_token=" in access_token or "login.live.com" in access_token or "github.io" in access_token):
         url_input = access_token
         access_match = re.search(r'access_token=([^&]+)', url_input)
         id_token_match = re.search(r'id_token=([^&]+)', url_input)
@@ -62,51 +56,36 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
                     payload_b64 += '=' * (-len(payload_b64) % 4)
                     payload = json.loads(base64.urlsafe_b64decode(payload_b64).decode('utf-8'))
                     user_id = payload.get('sub')
-                except:
-                    pass
+                except: pass
 
-    # 🔥 重點：如果群友什麼都沒填（第一次用），或者網址填錯，直接噴出超精美教學
+    # 🔥 如果沒填參數，就噴出引導群友去你 GitHub Pages 網頁的精美卡片
     if not access_token or not user_id:
         embed = discord.Embed(
-            title="✨特戰每日商店查詢教學",
+            title="✨特戰每日商店查詢助手",
             description=(
-                "為了保障您的帳號安全，本機器人**絕對不會收集或索取您的帳號密碼**。 🛡️\n"
-                "請在電腦上依照下方簡單的三個步驟，獲取官方的安全授權碼：\n\n"
-                "1️⃣ **第一步：登入 Riot 官網**\n"
-                "請先點擊下方連結完成登入（確認看到自己的 Riot ID 即可）：\n"
-                "[👉 點我前往 Riot 官方登入中心](https://account.riotgames.com/)\n\n"
-                "2️⃣ **第二步：一鍵獲取安全授權碼**\n"
-                "登入成功後**請勿關閉網頁**，直接在同一個瀏覽器點擊下方安全通道按鈕。\n"
-                "*(💡 註：點過去後畫面會彈出微軟的空白網頁，這完全是正常的！)*\n"
-                "[🔗 點我一鍵獲取安全 Token 網址](https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf&scope=openid+link+ban&nonce=1)\n\n"
-                "3️⃣ **第三步：整條複製並貼回查詢**\n"
-                "請把那個微軟空白網頁最上方網址列的**「那一整條超長網址」全部複製起來**！\n\n"
-                "再次回到 Discord 輸入 `/shop`，直接把那條長網址貼在 `access_token` 框框裡（第二格留空），按下 Enter 就能秒出你的商店造型卡片啦！"
+                "為了保障您的帳號安全，本群機器人**絕不索取帳號密碼**。 🛡_ \n\n"
+                "請點擊下方我們的專屬安全網頁，裡面有手把手一鍵獲取教學，用電腦點擊兩下就能完成喔！\n\n"
+                f"[🌐 點我前往 Zenith 專屬 Token 獲取網頁](https://nings123.github.io/valorant-shop-bot/)\n\n"
+                "進入網頁拿到網址後，再次回來輸入 `/shop` 並把整條網址貼在 `access_token` 即可查詢！"
             ),
             color=0xFFFFFF
         )
-        # 用 ephemeral=True 讓教學只有輸入指令的群友自己看得到，不洗頻
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
-    # 進入查詢流程（只有兩格都有正確解析到才會走到這裡）
     await interaction.response.defer(ephemeral=True)
 
     try:
-        # 1. 獲取 Entitlement Token
         ent_res = requests.post(
             "https://entitlements.auth.riotgames.com/api/v1/entitlements/token",
-            headers={"Authorization": f"Bearer {access_token}"},
-            json={}
+            headers={"Authorization": f"Bearer {access_token}"}, json={}
         )
-        
         if ent_res.status_code != 200:
-            await interaction.followup.send("❌ 網址解析失敗或已過期！請重新對照教學步驟，並確認有『完整複製』整條長網址。")
+            await interaction.followup.send("❌ 網址失效或複製不完整！請重新前往網頁獲取新網址。")
             return
             
         entitlement_token = ent_res.json()["entitlements_token"]
 
-        # 2. 向 Riot 商店接口請求資料
         headers = {
             "Authorization": f"Bearer {access_token}",
             "X-Riot-Entitlements-JWT": entitlement_token,
@@ -121,10 +100,7 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
             skin_uuids = shop_data["SkinsPanelLayout"]["SingleItemOffers"]
             
             embeds = []
-            main_embed = discord.Embed(
-                description="✨ **每日商店查詢成功！**\n*(新商店於台灣時間明早 8 點更新)*",
-                color=0xFFFFFF
-            )
+            main_embed = discord.Embed(description="✨ **每日商店查詢成功！**", color=0xFFFFFF)
             embeds.append(main_embed)
 
             for uuid in skin_uuids:
@@ -135,12 +111,9 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
 
             await interaction.followup.send(embeds=embeds)
         else:
-            await interaction.followup.send(f"❌ 查詢失敗，Token 可能已失效，請重新獲取網址。（錯誤碼：{shop_res.status_code}）")
+            await interaction.followup.send("❌ 查詢失敗，Token 可能已過期。")
 
     except Exception as e:
-        await interaction.followup.send(f"❌ 系統發生錯誤：{str(e)}")
+        await interaction.followup.send(f"❌ 系統錯誤：{str(e)}")
 
-if BOT_TOKEN:
-    bot.run(BOT_TOKEN)
-else:
-    print("❌ 錯誤：找不到環境變數 BOT_TOKEN！")
+if BOT_TOKEN: bot.run(BOT_TOKEN)
