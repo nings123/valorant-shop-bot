@@ -38,7 +38,7 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
     
     if not access_token or not user_id:
         embed = discord.Embed(
-            title="✨ Zenith 每日商店查詢教學",
+            title="✨每日商店查詢教學",
             description="為了帳號安全，本機器人不需要你的帳密！請依序取得 Token 來查詢：\n\n"
                         "1. **前往專屬網頁**：請點擊下方連結前往安全解析網頁：\n"
                         "   [👉 點我前往 Zenith Token 獲取助手](https://nings123.github.io/valorant-shop-bot/)\n\n"
@@ -61,7 +61,7 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
         if ent_res.status_code == 200:
             entitlement_token = ent_res.json()["entitlements_token"]
         else:
-            await interaction.followup.send("❌ Token 驗證失敗，請確認是否複製完整，或重新開啟小工具獲取新 Token！")
+            await interaction.followup.send("❌ Token 驗證失敗，請確認是否複製完整，或重新前往網頁獲取！")
             return
     except:
         await interaction.followup.send("❌ 連線至 Riot 驗證伺服器超時。")
