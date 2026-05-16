@@ -9,30 +9,11 @@
         .container { background-color: #111111; border: 1px solid #222222; padding: 35px 25px; border-radius: 4px; max-width: 480px; width: 100%; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
         h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; color: #ff4655; }
         .subtitle { color: #888888; font-size: 13px; margin-bottom: 25px; }
-        
-        /* 徹底改成高度自適應，物理上絕不可能再跑版凸出來 */
-        .step-card { background-color: #161616; border: 1px solid #222222; padding: 20px; text-align: left; margin-bottom: 20px; border-radius: 4px; box-sizing: border-box; height: auto !important; min-height: 180px; }
-        
+        .step-card { background-color: #161616; border: 1px solid #222222; padding: 20px; text-align: left; margin-bottom: 20px; border-radius: 4px; box-sizing: border-box; height: auto !important; }
         .step-num { font-size: 12px; color: #ff4655; font-weight: 800; margin-bottom: 5px; display: block; }
         .step-text { color: #cccccc; font-size: 14px; line-height: 1.6; margin-bottom: 15px; }
-        
-        .drag-btn { 
-            display: block; 
-            width: 100%; 
-            padding: 12px 0;
-            background-color: #ff4655; 
-            color: #ffffff; 
-            text-decoration: none; 
-            font-weight: 700; 
-            font-size: 15px; 
-            border-radius: 4px; 
-            text-align: center; 
-            box-sizing: border-box;
-            transition: background 0.2s;
-            border: none !important;
-        }
+        .drag-btn { display: block; width: 100%; padding: 12px 0; background-color: #ff4655; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 15px; border-radius: 4px; text-align: center; box-sizing: border-box; transition: background 0.2s; border: none !important; }
         .drag-btn:hover { background-color: #dc3d4b; }
-        
         textarea { width: 100%; height: 70px; background: #000; border: 1px solid #333; color: #fff; padding: 10px; box-sizing: border-box; margin-top: 10px; border-radius: 4px; resize: none; font-size: 12px; word-break: break-all; }
         .tool-btn { background: #333; color: #fff; border: none; height: 40px; border-radius: 4px; cursor: pointer; margin-top: 10px; width: 100%; font-weight: bold; }
         .tool-btn:hover { background: #444; }
@@ -45,47 +26,43 @@
     <div class="subtitle">特戰每日商店金鑰極速獲取工具</div>
     
     <div class="step-card">
-        <span class="step-num">方法一：精確解碼相容書籤</span>
+        <span class="step-num">方法一：全新一代「純 Token」提煉書籤</span>
         <div class="step-text">
             1. 顯示瀏覽器書籤列（Ctrl+Shift+B）。<br>
             2. 把下方按鈕重新拖曳到書籤列覆蓋舊的。<br>
-            3. 在特戰官網登入後點擊書籤，直接去 Discord 貼上！
+            3. 在特戰官網登入後點擊書籤，它會自動剔除所有網址，只複製純金鑰，請直接回 Discord 貼上送出！
         </div>
-        <a class="drag-btn" href="javascript:(function(){const u=window.location.href;const m=u.match(/access_token=([^&]+)/);if(m){let c='https://playvalorant.com/zh-tw/opt_in/#access_token='+m[1];const e=document.createElement('textarea');e.value=c;document.body.appendChild(e);e.select();document.execCommand('copy');document.body.removeChild(e);alert('🎉 複製成功！\n\n網址已過濾雜質，請直接回 Discord 貼上！');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
+        <a class="drag-btn" href="javascript:(function(){const u=window.location.href;const m=u.match(/access_token=([^&]+)/);if(m){const e=document.createElement('textarea');e.value=m[1];document.body.appendChild(e);e.select();document.execCommand('copy');document.body.removeChild(e);alert('🎉 提煉成功！\n\n已自動抓取核心「純 Token」金鑰（不含任何網址）！\n請直接回 Discord 貼上送出！');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
             ➔ 拖曳我到書籤列 ➔
         </a>
     </div>
 
     <div class="step-card">
-        <span class="step-num">方法二：精準防漏裁剪框</span>
+        <span class="step-num">方法二：長網址極速無腦裁剪框</span>
         <div class="step-text">
-            如果點擊書籤被瀏覽器擋住，請把跳轉後那一長串帶有 404 的長網址複製，貼到下方格子裡：
+            如果點擊書籤沒反應，請把官方跳轉後那一長串帶有 404 的長網址複製，貼到下方：
         </div>
         <textarea id="inputUrl" placeholder="請在此貼上官方那一長串長網址..."></textarea>
-        <button class="tool-btn" onclick="processUrl()">➔ 一鍵裁剪為純淨短網址</button>
+        <button class="tool-btn" onclick="processUrl()">➔ 一鍵提煉純金鑰（去網址）</button>
     </div>
 </div>
 
 <script>
 function processUrl() {
     let input = document.getElementById('inputUrl').value.trim();
-    // 精準過濾出 access_token 的本體，完美剔除後面的 id_token、expires_in 等雜質
     let match = input.match(/access_token=([^&]+)/);
-    
     if(!match) {
-        alert('無法識別 Token，請確認輸入的是登入跳轉後的完整長網址！');
+        alert('請確認輸入的是正確的特戰金鑰長網址！');
         return;
     }
     
-    let cleanUrl = 'https://playvalorant.com/zh-tw/opt_in/#access_token=' + match[1];
-    
     let el = document.createElement('textarea');
-    el.value = cleanUrl;
+    el.value = match[1];
     document.body.appendChild(el);
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    alert('🎉 轉換並複製成功！\n\n已過濾所有網址雜質，請立刻去 Discord 貼上送出！');
+    alert('🎉 提煉成功！\n\n已成功幫您剁掉所有網址網域，只複製純金鑰！\n請立刻去 Discord 貼上送出吧！');
 }
 </script>
 
