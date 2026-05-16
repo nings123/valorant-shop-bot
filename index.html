@@ -25,7 +25,7 @@
     <div class="subtitle">特戰每日商店金鑰極速獲取工具</div>
     
     <div class="step-card">
-        <span class="step-num">方法一：保留語系＋極致防吃字書籤</span>
+        <span class="step-num">方法一：雙重修正無痛書籤</span>
         <div class="step-text">
             1. 顯示瀏覽器書籤列（Ctrl+Shift+B）。<br>
             2. 把下方按鈕<b>重新拖曳</b>到書籤列覆蓋舊的。<br>
@@ -39,7 +39,7 @@
     <div class="step-card">
         <span class="step-num">方法二：長網址防呆裁剪框</span>
         <div class="step-text">
-            如果點擊書籤被瀏覽器擋住，請把跳轉後那一長串帶有 404 的長網址複製，貼到下方格子裡：
+            如果點擊書籤被瀏覽器擋住，請把跳轉後那一長串長網址複製，貼到下方格子裡：
         </div>
         <textarea id="inputUrl" placeholder="請在此貼上官方那一長串長網址..."></textarea>
         <button class="tool-btn" onclick="processUrl()">➔ 一鍵轉換為完美商店短網址</button>
@@ -57,7 +57,7 @@ function processUrl() {
     let params = new URLSearchParams(hash.replace('#','?'));
     let token = params.get('access_token');
     
-    // 強制幫群友加上機器人要的 zh-tw，同時把廢話切掉
+    // 自動幫群友補上 zh-tw，同時把後方的 id_token 廢話切掉，達成黃金比例
     let cleanUrl = 'https://playvalorant.com/zh-tw/opt_in/#access_token=' + token;
     
     let el = document.createElement('textarea');
