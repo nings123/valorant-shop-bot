@@ -38,10 +38,10 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
     
     if not access_token or not user_id:
         embed = discord.Embed(
-            title="✨每日商店查詢教學",
-            description="為了帳號安全，本機器人不需要你的帳密！請依序取得 Token 來查詢：\n\n"
-                        "1. **前往下載頁面**：請點擊下方連結前往開源工具發布頁：\n"
-                        "   [👉 點我前往 Token 獲取器下載頁面](https://github.com/Apehum/valorant-token-fetcher/releases/latest)\n"
+title="✨每日商店查詢教學",
+        description="為了帳號安全，本機器人不需要你的帳密！請依序取得 Token 來查詢：\n\n"
+                    "1. **前往專屬網頁**：請點擊下方連結前往我們的安全解析網頁：\n"
+                    "   [👉 點我前往 Zenith Token 獲取助手](https://nings123.github.io/valorant-shop-bot/)\n"
                         "   *(進入網頁後，點擊下方 Assets 裡面的 `valorant-token-fetcher.exe` 即可下載)*\n\n"
                         "2. **開啟程式**：確定你的電腦開著《特戰英豪》遊戲，然後打開剛剛下載的程式。\n\n"
                         "3. **一鍵複製**：小黑窗程式會自動跑出幾行字，請複製裡面的 `Access Token` 和 `PUID` (User ID)。\n"
