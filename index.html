@@ -107,7 +107,7 @@
 </div>
 
 <script>
-    const riotAuthUrl = "https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token%20id_token&redirect_uri=http%3A%2F%2Flocalhost%2Fredirect&scope=openid%20link%20ban";
+    const riotAuthUrl = "https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token%20id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid%20link%20ban";
 
     document.getElementById('loginBtn').addEventListener('click', () => {
         const authWindow = window.open(riotAuthUrl, '_blank', 'width=500,height=600');
