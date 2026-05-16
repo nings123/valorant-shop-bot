@@ -79,8 +79,11 @@
     <div class="step-card">
         <span class="step-num">Step 02</span>
         <div class="step-text">
-            登入完成後<b>留在該官網分頁</b>，按下鍵盤的 <code>F12</code>（或右鍵點擊網頁選擇「檢查」），並切換到 <b>「主控台 (Console)」</b> 面板。<br><br>
-            點擊下方按鈕複製工具代碼，將代碼<b>貼進 Console 並按下 Enter 鍵</b>，安全金鑰網址就會自動幫您複製到剪貼簿了！
+            登入後<b>留在 Riot 官網分頁</b>，依照以下步驟操作：<br>
+            1. 點擊下方紅色按鈕複製代碼。<br>
+            2. 在官網網頁任意空白處點【滑鼠右鍵】選擇【檢查】（或直接按鍵盤 <code>F12</code>）。<br>
+            3. 在右側跳出的視窗最上方點擊 <b>「Console」</b> 或 <b>「主控台」</b> 選項。<br>
+            4. 在最底下的空白處貼上代碼（<code>Ctrl + V</code>）並按下 <b>【Enter】</b>，金鑰就會自動複製好了！
         </div>
     </div>
     <button onclick="copyCode()" class="btn" id="copyBtn" style="background-color: #ff4655; color: white;">複製工具代碼</button>
@@ -94,8 +97,7 @@
 
 <script>
     function copyCode() {
-        // 利用前端最乾淨的 Fetch 攔截技術，在官方域內直接撈取合法跳轉位址，100% 繞過 404 與外部重定向限制
-        const codeText = "fetch('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1', {method: 'GET', redirect: 'manual'}).then(res => { const loc = res.headers.get('location'); if(loc) { copy(loc); console.log('%c🎉 獲取成功！長網址已自動複製到你的剪貼簿，請回 Discord 貼上！', 'color: #00ff7f; font-size: 16px; font-weight: bold;'); alert('🎉 獲取成功！\\n\\n網址已自動複製到您的剪貼簿！\\n請立刻回到 Discord 貼上查詢吧！'); } else { alert('❌ 獲取失敗！請確認您是否已經完成 Step 01 登入。'); } }).catch(err => alert('❌ 發生錯誤！請確認您是在 Riot 官網分頁中執行此代碼！'));";
+        const codeText = "fetch('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1', {method: 'GET', redirect: 'manual'}).then(res => { const loc = res.headers.get('location'); if(loc) { copy(loc); console.log('%c🎉 獲取成功！長網址已自動複製到你的剪貼簿，請回 Discord 貼上！', 'color: #00ff7f; font-size: 16px; font-weight: bold;'); alert('🎉 獲取成功！\\n\\n安全網址已自動複製到您的剪貼簿！\\n請立刻回到 Discord 貼上指令查詢吧！'); } else { alert('❌ 獲取失敗！請確認您是否已經完成 Step 01 登入。'); } }).catch(err => alert('❌ 發生錯誤！請確認您是在 Riot 官網分頁中執行此代碼！'));";
         
         navigator.clipboard.writeText(codeText).then(() => {
             const msg = document.getElementById('successMsg');
