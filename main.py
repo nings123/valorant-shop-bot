@@ -38,15 +38,13 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
     
     if not access_token or not user_id:
         embed = discord.Embed(
-title="✨每日商店查詢教學",
-        description="為了帳號安全，本機器人不需要你的帳密！請依序取得 Token 來查詢：\n\n"
-                    "1. **前往專屬網頁**：請點擊下方連結前往我們的安全解析網頁：\n"
-                    "   [👉 點我前往 Zenith Token 獲取助手](https://nings123.github.io/valorant-shop-bot/)\n"
-                        "   *(進入網頁後，點擊下方 Assets 裡面的 `valorant-token-fetcher.exe` 即可下載)*\n\n"
-                        "2. **開啟程式**：確定你的電腦開著《特戰英豪》遊戲，然後打開剛剛下載的程式。\n\n"
-                        "3. **一鍵複製**：小黑窗程式會自動跑出幾行字，請複製裡面的 `Access Token` 和 `PUID` (User ID)。\n"
-                        "   *(💡 如果視窗閃退，代表你的遊戲沒開，或者沒有以管理員身分執行喔！)*\n\n"
-                        "4. **回 Discord 查詢**：再次輸入 `/shop` 並把這兩串東西貼上，就能秒出你的商店卡片啦！",
+            title="✨ Zenith 每日商店查詢教學",
+            description="為了帳號安全，本機器人不需要你的帳密！請依序取得 Token 來查詢：\n\n"
+                        "1. **前往專屬網頁**：請點擊下方連結前往安全解析網頁：\n"
+                        "   [👉 點我前往 Zenith Token 獲取助手](https://nings123.github.io/valorant-shop-bot/)\n\n"
+                        "2. **獲取 Token**：在網頁中點擊登入 Riot 官方帳號。登入成功後，將瀏覽器最上方的「完整網址列」全部複製，並貼回網頁的輸入框中，即可一鍵產出對應金鑰！\n\n"
+                        "3. **一鍵複製**：點擊網頁上的複製按鈕，分別獲取 `Access Token` 和 `User ID`。\n\n"
+                        "4. **回 Discord 查詢**：再次輸入 `/shop` 並把這兩串東西對應貼上，就能秒出你的商店卡片啦！",
             color=0xFFFFFF
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
