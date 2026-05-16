@@ -86,7 +86,7 @@
             把舊的 Zenith 書籤按右鍵刪除，然後把下方<b>紅色虛線按鈕</b>重新【<b>拖曳到書籤列</b>】。
         </div>
         
-        <a class="drag-btn" href="javascript:(function(){const hash=window.location.hash;if(hash.includes('access_token')){let currentHash=window.location.hash;let cleanUrl='https://playvalorant.com/opt_in/'+currentHash;const el=document.createElement('textarea');el.value=cleanUrl;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 獲取成功！\n\n標準格式金鑰已完美複製到剪貼簿！\n可以立刻回到 Discord 貼上查詢囉！');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
+        <a class="drag-btn" href="javascript:(function(){const hash=window.location.hash;if(hash.includes('access_token')){let params=new URLSearchParams(hash.replace('#','?'));let token=params.get('access_token');let cleanUrl='https://playvalorant.com/opt_in/#access_token='+token;const el=document.createElement('textarea');el.value=cleanUrl;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 獲取成功！\n\n網址已完成「極致防吃字縮減」並去除了 zh-tw！\n現在貼進 Discord 絕對不會再被砍斷囉！');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
             ➔ 拖曳我到書籤列 ➔
         </a>
     </div>
@@ -94,7 +94,7 @@
     <div class="step-card" style="margin-bottom: 0;">
         <span class="step-num">Step 03</span>
         <div class="step-text">
-            點擊書籤後，網頁會自動完成跳轉。當畫面上彈出「獲取成功」時，剪貼簿就已經躺著 100% 乾淨、不帶 zh-tw 的網址囉！
+            點擊書籤後，網頁會自動跳轉。當畫面上彈出「獲取成功」時，直接去 Discord 貼上就大功告成了！
         </div>
     </div>
 </div>
