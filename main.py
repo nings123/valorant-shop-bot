@@ -30,16 +30,15 @@ def get_skin_data(uuid):
 @app_commands.describe(entitlement_token="你的 Entitlement Token", access_token="你的 Access Token", user_id="你的 Riot PUID")
 async def shop(interaction: discord.Interaction, entitlement_token: str = None, access_token: str = None, user_id: str = None):
     
-    # 如果沒輸入，跳出全新、不囉唆的無腦獲取指南
+    # 如果沒輸入，跳出全新的無腦網頁獲取指南
     if not entitlement_token or not access_token or not user_id:
         embed = discord.Embed(
             title="✨ Zenith 每日商店查詢教學",
-            description="為了帳號安全，本群不收集密碼。請用以下超簡單方式取得金鑰：\n\n"
-                        "1. **下載安全小工具**：請在電腦下載社群開源的 Token 獲取器：\n"
-                        "   [👉 點我下載 Token 獲取器 (GitHub 開源)](https://github.com/mga2001/Valorant-Stream-Overlay/releases/latest/download/Valorant.Stream.Overlay.exe)\n"
-                        "2. **開啟程式**：確定你的電腦開著《特戰英豪》，然後打開剛剛下載的程式。\n"
-                        "3. **一鍵複製**：程式會直接顯示你的 `Access Token`、`Entitlement` 和 `PUID`，點擊旁邊的 Copy 即可。\n\n"
-                        "4. **回 Discord 查詢**：再次輸入 `/shop` 並把這三串東西貼上，就能看到你的商店啦！",
+            description="為了帳號安全，本群不收集密碼。請用以下最簡單的方式取得金鑰：\n\n"
+                        "1. **打開登入網頁**：請點擊下方安全連結進行 Riot 官方授權登入：\n"
+                        "   [👉 點我前往 Riot 安全登入網頁](https://auth.solv3.de/)\n"
+                        "2. **一鍵複製**：登入成功後，網頁會直接顯示這三串東西，請直接點擊它們一鍵複製。\n\n"
+                        "3. **回 Discord 查詢**：再次在頻道輸入 `/shop`，並把複製好的 `Access Token`、`Entitlement` 和 `User ID` 貼上，就能秒出你的黑白商店卡片啦！",
             color=0xFFFFFF
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
