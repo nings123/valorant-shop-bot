@@ -37,18 +37,22 @@ def get_skin_data(uuid):
 @app_commands.describe(entitlement_token="你的 Entitlement Token", access_token="你的 Access Token", user_id="你的 Riot PUID")
 async def shop(interaction: discord.Interaction, entitlement_token: str = None, access_token: str = None, user_id: str = None):
     
-    # 如果沒輸入 Token，跳出已補上 nonce 參數的純官方安全指南
+    # 如果沒輸入 Token，跳出保證能順利登入的安全通道指南
     if not entitlement_token or not access_token or not user_id:
         embed = discord.Embed(
-            title="✨ Zenith 每日商店查詢教學",
+            title="✨ 每日商店查詢教學",
             description="為了帳號安全，本群不收集密碼。請用以下純官方、保證不壞的方式取得金鑰：\n\n"
-                        "1. **登入官網**：用電腦瀏覽器開啟並登入 [👉 Riot 官方網站](https://auth.riotgames.com/)\n"
-                        "2. **獲取 Access Token & User ID**：登入後，在同瀏覽器開新分頁前往以下網址（這是模擬特戰啟動器的安全通道）：\n"
-                        "   [👉 點我前往全新官方跳轉網址](https://auth.riotgames.com/authorize?client_id=riot-client&redirect_uri=http%3A%2F%2Flocalhost%2Fredirect&response_type=token%20id_token&scope=openid%20link%20accounts&nonce=1)\n\n"
-                        "   *注意：點過去如果畫面顯示「localhost 拒絕連線」是完全正常的！請直接看最上方的**網址列**：*\n"
-                        "   • 網址列中 `access_token=` 後面那一長串就是 **Access Token**。\n"
-                        "   • 網址列中 `sub=` 後面那串英數就是你的 **User ID**。\n\n"
-                        "3. **獲取 Entitlement**：再開一個新分頁前往以下網址：\n"
+                        "1. **第一步：先登入官網**\n"
+                        "   請先用電腦瀏覽器開啟並登入 [👉 Riot 官方帳號管理中心](https://account.riotgames.com/)\n"
+                        "   *(請務必確保在這個網頁看到自己的 Riot ID 登入成功喔！)*\n\n"
+                        "2. **第二步：獲取 Access Token & User ID**\n"
+                        "   登入成功後，**不要關閉網頁**，直接在同一個瀏覽器開新分頁，點擊前往這個網址：\n"
+                        "   [👉 點我前往官方安全通道網址](https://auth.riotgames.com/authorize?client_id=riot-client&redirect_uri=http%3A%2F%2Flocalhost%2Fredirect&response_type=token%20id_token&scope=openid%20link%20accounts&nonce=1)\n"
+                        "   • *注意：點過去畫面顯示「localhost 拒絕連線」是完全正常的！*\n"
+                        "   • 請直接看最上方的**網址列**，複製裡面 `access_token=` 後面那一長串亂碼。\n"
+                        "   • 網址列中 `sub=` 後面那串英數數字就是你的 **User ID**。\n\n"
+                        "3. **第三步：獲取 Entitlement**\n"
+                        "   同樣在同個瀏覽器再開一個新分頁，前往以下網址：\n"
                         "   [👉 點我前往 Entitlement 網址](https://entitlements.auth.riotgames.com/api/v1/entitlements/token)\n"
                         "   • 畫面中 `" '"entitlements_token":"...' "` 雙引號裡面的長代碼就是 **Entitlement**。\n\n"
                         "4. **回 Discord 查詢**：再次輸入 `/shop` 並把這三串東西貼上，就能秒出你的簡約風商店卡片啦！",
