@@ -40,101 +40,48 @@
             margin-bottom: 15px;
             box-sizing: border-box;
             transition: background 0.2s;
-            cursor: pointer;
-            border: none;
+            text-align: center;
             font-size: 15px;
+            border: none;
+            cursor: pointer;
         }
         .btn:hover { background-color: #e53e4b; }
         .btn-secondary { background-color: #2b313d; color: #a0aab8; }
         .btn-secondary:hover { background-color: #363e4d; color: #ffffff; }
-        .result-box {
-            background-color: #0b0e14;
-            padding: 15px;
-            border-radius: 6px;
-            text-align: left;
-            margin-top: 20px;
-            display: none;
-            border: 2px solid #ff4655;
-        }
-        .result-box label { font-size: 14px; color: #ff4655; font-weight: bold; display: block; margin-bottom: 8px; }
-        .result-box textarea {
-            width: 100%;
-            height: 70px;
-            background: #161a23;
-            border: 1px solid #2b313d;
-            color: #ffffff;
-            font-family: monospace;
-            font-size: 12px;
-            resize: none;
-            outline: none;
-            padding: 8px;
-            box-sizing: border-box;
-            border-radius: 4px;
-        }
         .step { text-align: left; background: #1f2530; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
         .step-title { font-weight: bold; margin-bottom: 5px; color: #ffffff; font-size: 15px; }
-        .step-desc { color: #a0aab8; font-size: 13px; }
+        .step-desc { color: #a0aab8; font-size: 13px; line-height: 1.5; }
         code { background: #0b0e14; padding: 2px 6px; border-radius: 4px; color: #ff4655; font-family: monospace; }
+        .warning-text { color: #ffbc00; font-size: 12px; margin-top: 5px; display: block; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>✨獲取助手</h1>
-    <p>為了保障您的帳號安全，本工具完全在瀏覽器本地運行，絕不索取或收集您的帳號密碼。 🛡️</p>
+    <p>為了保障您的帳號安全，本工具不索取帳密。請依照下方步驟獲取商店查詢金鑰。</p>
     
     <div class="step">
-        <div class="step-title">1️⃣ 第一步：登入官網</div>
-        <div class="step-desc">請先點擊下方按鈕登入 Riot 官方網站（若您已經登入過可以跳過）。</div>
+        <div class="step-title">1️⃣ 第一步：登入 Riot 官網</div>
+        <div class="step-desc">請先點擊下方按鈕登入官網。確認看到自己的 Riot ID 即可（若已登入可跳過）。</div>
     </div>
     <a href="https://account.riotgames.com/" target="_blank" class="btn btn-secondary">👉 前往 Riot 官方登入中心</a>
 
     <div class="step">
-        <div class="step-title">2️⃣ 第二步：一鍵獲取授權網址</div>
-        <div class="step-desc">登入成功後回到這裡，點擊下方紅色按鈕。畫面會跳轉並<b>自動返回本網頁</b>。</div>
+        <div class="step-title">2️⃣ 第二步：獲取安全金鑰網址</div>
+        <div class="step-desc">
+            登入後回來點擊下方紅色按鈕。在新分頁打開後，<b>畫面會顯示「404 PAGE NOT FOUND」</b>。<br>
+            <span class="warning-text">⚠️ 註：看到 404 是完全正常的！請不要關閉網頁！</span>
+            請直接將那個 404 網頁最上方網址列的<b>「那一整條超長網址」全部複製起來</b>。
+        </div>
     </div>
-    <button onclick="startAuth()" class="btn">🔗 點我一鍵安全授權</button>
+    <a href="https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1" target="_blank" class="btn">🔗 點我獲取授權網址 (會顯示404)</a>
 
-    <div class="result-box" id="resultBox">
-        <label>🎉 成功抓取安全金鑰！請複製下方「整條網址」：</label>
-        <textarea id="outputUrl" readonly onclick="this.select()"></textarea>
-        <button class="btn btn-secondary" style="margin-top: 10px; margin-bottom: 0; padding: 8px;" onclick="copyToken()">📋 點我一鍵複製網址</button>
-    </div>
-
-    <div class="step" style="margin-top: 20px;">
+    <div class="step">
         <div class="step-title">3️⃣ 第三步：回到 Discord 查詢商店</div>
         <div class="step-desc">回到 Discord 頻道輸入 <code>/shop</code>，並把剛才複製的整條網址直接貼進 <code>access_token</code> 欄位送出即可！</div>
     </div>
 </div>
-
-<script>
-    // 呼叫 Riot 官方最正宗的登入授權通道（轉回你自己的網頁網址）
-    function startAuth() {
-        const redirectUri = window.location.origin + window.location.pathname;
-        const authUrl = `https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=openid+link+ban&nonce=1`;
-        window.location.href = authUrl;
-    }
-
-    // 檢查網頁有沒有成功帶回 Token 參數
-    function checkUrl() {
-        if (window.location.hash) {
-            document.getElementById('resultBox').style.display = 'block';
-            document.getElementById('outputUrl').value = window.location.href;
-            // 畫面滾動到最下方方便群友複製
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-        }
-    }
-
-    function copyToken() {
-        const copyText = document.getElementById("outputUrl");
-        copyText.select();
-        document.execCommand("copy");
-        alert("📋 複製成功！請立刻回到 Discord 貼上查詢吧！");
-    }
-
-    window.addEventListener('hashchange', checkUrl);
-    window.addEventListener('load', checkUrl);
-</script>
 
 </body>
 </html>
