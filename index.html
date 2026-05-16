@@ -55,6 +55,7 @@
             border: none;
             cursor: pointer;
             text-transform: uppercase;
+            text-align: center;
         }
         .btn:hover { background-color: #ff4655; color: #ffffff; }
         .btn-secondary { background-color: #1c1c1c; color: #888888; border: 1px solid #2c2c2c; margin-bottom: 15px; }
@@ -76,30 +77,15 @@
 
     <div class="step-card">
         <span class="step-num">Step 02</span>
-        <div class="step-text">點擊下方按鈕下載金鑰獲取腳本。下載後<b>直接雙擊執行</b>，它會自動為您在瀏覽器抓取安全金鑰，並直接跳出視窗讓您一鍵複製網址！</div>
+        <div class="step-text">登入後回來，點擊下方紅色按鈕。頁面會跳轉到 Riot 官方合法的登出確認頁面，<b>請直接複製瀏覽器最上方網址列的「那一整條超長網址」</b>。</div>
     </div>
-    <button onclick="downloadScript()" class="btn">下載一鍵獲取腳本</button>
+    <a href="https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Flogout&scope=openid+link+ban&nonce=1" target="_blank" class="btn" style="background-color: #ff4655; color: white;">🔗 點我一鍵安全獲取網址</a>
 
     <div class="step-card" style="margin-top: 25px; margin-bottom: 0;">
         <span class="step-num">Step 03</span>
         <div class="step-text">回到 Discord 輸入 <code>/shop</code>，並將複製的整條網址直接貼進 <code>access_token</code> 欄位即可秒出商店！</div>
     </div>
 </div>
-
-<script>
-    function downloadScript() {
-        // 利用 PowerShell 官方原生快取通道，在使用者本地端完全無痛抓取 Token
-        const scriptText = `@echo off\nchcp 65001 >nul\ntitle Zenith Token Grabber\necho 🚀 正在安全獲取您的特戰商店 Token...\npowershell -Command "$url = 'https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1'; $ie = New-Object -ComObject InternetExplorer.Application; $ie.Navigate($url); while($ie.Busy -or $ie.ReadyState -ne 4){Start-Sleep -m 100}; $finalUrl = $ie.LocationURL; $ie.Quit(); if($finalUrl -match 'access_token='){ Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.Clipboard]::SetText($finalUrl); [System.Windows.Forms.MessageBox]::Show('🎉 成功獲取安全金鑰！\\n\\n網址已自動複製到您的剪貼簿！\\n請立刻回到 Discord 貼上查詢吧！', 'Zenith 助手'); } else { [System.Windows.Forms.MessageBox]::Show('❌ 獲取失敗！請確認您是否已經先在網頁登入 Riot 帳號。', 'Zenith 錯誤'); }"\nexit`;
-        
-        const blob = new Blob([scriptText], { type: 'text/plain' });
-        const element = document.createElement('a');
-        element.href = URL.createObjectURL(blob);
-        element.download = "Get_Zenith_Token.bat";
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
-    }
-</script>
 
 </body>
 </html>
