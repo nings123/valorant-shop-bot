@@ -79,15 +79,16 @@
     <div class="step-card">
         <span class="step-num">Step 02</span>
         <div class="step-text">
-            登入後<b>留在 Riot 官網分頁</b>，依照以下步驟操作：<br>
-            1. 點擊下方紅色按鈕複製代碼。<br>
-            2. 在官網網頁任意空白處點【滑鼠右鍵】選擇【檢查】（或直接按鍵盤 <code>F12</code>）。<br>
-            3. 在右側跳出的視窗最上方點擊 <b>「Console」</b> 或 <b>「主控台」</b> 選項。<br>
-            4. 在最底下的空白處貼上代碼（<code>Ctrl + V</code>）並按下 <b>【Enter】</b>，金鑰就會自動複製好了！
+            登入完成後，依照以下步驟操作：<br>
+            1. 點擊下方紅色按鈕<b>複製工具代碼</b>。<br>
+            2. 在剛才打開的 Riot 網頁空白處點【滑鼠右鍵】選擇【檢查】（或直接按鍵盤 <code>F12</code>）。<br>
+            3. 在跳出視窗的最上方選單，點擊 <b>「Console」</b> 或 <b>「主控台」</b>。<br>
+            <span style="color: #ff4655; font-weight: bold;">⚠️ 第一次使用注意：</span> 如果貼上時瀏覽器跳出黃色警告，請在最底下手動輸入 <code>允許貼上</code>（英文瀏覽器輸入 <code>allow pasting</code>）並按下 Enter 鍵解鎖！<br>
+            4. 將代碼貼上（<code>Ctrl + V</code>）並按下 <b>【Enter】</b> 執行即可！
         </div>
     </div>
     <button onclick="copyCode()" class="btn" id="copyBtn" style="background-color: #ff4655; color: white;">複製工具代碼</button>
-    <div id="successMsg" class="success-tip">✓ 代碼已成功複製到您的剪貼簿！</div>
+    <div id="successMsg" class="success-tip">✓ 工具代碼已成功複製到您的剪貼簿！</div>
 
     <div class="step-card" style="margin-top: 25px; margin-bottom: 0;">
         <span class="step-num">Step 03</span>
@@ -97,8 +98,8 @@
 
 <script>
     function copyCode() {
-        // 升級版代碼：改為指向 playvalorant.com 域，徹底繞過 account 域的 CORS 跨域鎖定阻擋
-        const codeText = "if(window.location.hostname !== 'playvalorant.com'){ alert('❌ 偵測到您不在特戰英豪官網！\\n\\n請點擊確定，系統會自動幫您開啟【特戰英豪官網】。\\n等網頁載入完後，直接在「該新分頁」重新按 F12 貼上代碼即可！'); window.open('https://playvalorant.com/zh-tw/', '_blank'); } else { fetch('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1', {method: 'GET', redirect: 'manual'}).then(res => { const loc = res.headers.get('location'); if(loc) { copy(loc); console.log('%c🎉 獲取成功！長網址已自動複製到你的剪貼簿，請回 Discord 貼上！', 'color: #00ff7f; font-size: 16px; font-weight: bold;'); alert('🎉 獲取成功！\\n\\n安全網址已自動複製到您的剪貼簿！\\n請立刻回到 Discord 貼上指令查詢吧！'); } else { alert('❌ 獲取失敗！請確認您是否已經完成 Step 01 登入。'); } }).catch(err => alert('❌ 發生錯誤！請確認您是在 Riot 官網分頁中執行此代碼！')); }";
+        // 內含自動跳轉特戰官網防禦機制的終極代碼
+        const codeText = "if(window.location.hostname !== 'playvalorant.com'){ alert('❌ 偵測到您目前在帳號管理頁面！\\n\\n由於 Riot 限制，請點擊「確定」，系統會自動幫您開啟【特戰英豪台灣官網】。\\n\\n等新網頁載入完後，直接在該新網頁重新按下 F12 貼上代碼執行即可！'); window.open('https://playvalorant.com/zh-tw/', '_blank'); } else { fetch('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1', {method: 'GET', redirect: 'manual'}).then(res => { const loc = res.headers.get('location'); if(loc) { copy(loc); console.log('%c🎉 獲取成功！長網址已自動複製到你的剪貼簿，請回 Discord 貼上！', 'color: #00ff7f; font-size: 16px; font-weight: bold;'); alert('🎉 獲取成功！\\n\\n安全長網址網址已自動複製到您的剪貼簿！\\n請立刻回到 Discord 貼上查詢吧！'); } else { alert('❌ 獲取失敗！請確認您是否已經完成 Step 01 登入。'); } }).catch(err => alert('❌ 發生錯誤！請確認您是在特戰官網分頁中執行此代碼！')); }";
         
         navigator.clipboard.writeText(codeText).then(() => {
             const msg = document.getElementById('successMsg');
