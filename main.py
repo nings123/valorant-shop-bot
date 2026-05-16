@@ -18,7 +18,6 @@ bot = MyBot()
 
 def get_skin_data(uuid):
     try:
-        # 使用最穩定的官方造型庫
         res = requests.get("https://valorant-api.com/v1/weapons/skins?language=zh-TW")
         if res.status_code == 200:
             skins = res.json()["data"]
@@ -41,10 +40,12 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
         embed = discord.Embed(
             title="✨每日商店查詢教學",
             description="為了帳號安全，本機器人不需要你的帳密！請依序取得 Token 來查詢：\n\n"
-                        "1. **下載安全小工具**：請在電腦下載社群開源的 Token 獲取器：\n"
-                        "   [👉 點我下載 Token 獲取器 (100% 官方對接，保證安全)](https://github.com/Apehum/valorant-token-fetcher/releases/download/v1.2.0/valorant-token-fetcher.exe)\n\n"
+                        "1. **前往下載頁面**：請點擊下方連結前往開源工具發布頁：\n"
+                        "   [👉 點我前往 Token 獲取器下載頁面](https://github.com/Apehum/valorant-token-fetcher/releases/latest)\n"
+                        "   *(進入網頁後，點擊下方 Assets 裡面的 `valorant-token-fetcher.exe` 即可下載)*\n\n"
                         "2. **開啟程式**：確定你的電腦開著《特戰英豪》遊戲，然後打開剛剛下載的程式。\n\n"
-                        "3. **一鍵複製**：小黑窗程式會自動跑出幾行字，請複製裡面的 `Access Token` 和 `PUID` (User ID)。\n\n"
+                        "3. **一鍵複製**：小黑窗程式會自動跑出幾行字，請複製裡面的 `Access Token` 和 `PUID` (User ID)。\n"
+                        "   *(💡 如果視窗閃退，代表你的遊戲沒開，或者沒有以管理員身分執行喔！)*\n\n"
                         "4. **回 Discord 查詢**：再次輸入 `/shop` 並把這兩串東西貼上，就能秒出你的商店卡片啦！",
             color=0xFFFFFF
         )
@@ -53,7 +54,6 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
 
     await interaction.response.defer(ephemeral=True)
 
-    # 用 Access Token 自動跟 Riot 換領 Entitlement Token
     try:
         ent_res = requests.post(
             "https://entitlements.auth.riotgames.com/api/v1/entitlements/token",
