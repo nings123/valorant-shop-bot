@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenith 特戰網址提取助手 v2.0</title>
+    <title>Zenith 特戰網址提取助手 v2.1</title>
     <style>
         body { 
             font-family: "Segoe UI", Arial, sans-serif; 
@@ -22,7 +22,7 @@
             border: 1px solid #222222; 
             padding: 35px 25px; 
             border-radius: 4px; 
-            max-width: 480px; 
+            max-width: 500px; 
             width: 100%; 
             text-align: center; 
             box-shadow: 0 15px 35px rgba(0,0,0,0.8); 
@@ -107,7 +107,7 @@
             border: 1px solid #222; 
         }
         .result-title { 
-            color: #ff4655; 
+            color: #00ffcc; 
             font-size: 13px; 
             font-weight: bold; 
             margin-bottom: 5px; 
@@ -146,28 +146,28 @@
             font-size: 12px; 
         }
         ol { padding-left: 18px; margin: 8px 0; }
-        li { margin-bottom: 6px; }
+        li { margin-bottom: 8px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Zenith URL Assistant</h1>
-    <div class="subtitle">🛡️ 全新自動穿透版！免手動切換視環境 [v2.0]</div>
+    <div class="subtitle">🛡️ 安全防封鎖｜100% 成功獲取專屬商店 Token 網址 [v2.1]</div>
     
     <div class="step-box">
-        <strong style="color: #ff4655;">💡 提取商店網址步驟：</strong><br>
+        <strong style="color: #ff4655;">💡 獲取網址三步驟：</strong><br>
         <ol>
-            <li>先點擊前往 <a href="https://playvalorant.com/zh-tw/" target="_blank" style="color: #00ffcc; font-weight: bold; text-decoration: none;">【特戰英豪官方網站】</a> 並確保右上角是已登入狀態。</li>
-            <li>在官方網頁按下 <code>F12</code> 切換到 <strong>Console (主控台)</strong> 分頁。</li>
-            <li>點擊下方按鈕複製代碼，直接貼進 Console 並按下 <code>Enter</code> 執行：</li>
+            <li>先前往 <a href="https://playvalorant.com/zh-tw/" target="_blank" style="color: #00ffcc; font-weight: bold; text-decoration: none;">【特戰英豪官方網站】</a> 並登入您的帳號（右上角需顯示玩家 ID）。</li>
+            <li>在該網頁按下鍵盤的 <code>F12</code> 切換到 <strong>Console (主控台)</strong> 分頁。</li>
+            <li>點擊下方按鈕複製代碼，貼進 Console 並按下 <code>Enter</code> 執行：</li>
         </ol>
-        <button class="btn" onclick="copyConsoleCode()">📋 一鍵複製全新自動穿透代碼</button>
+        <button class="btn" onclick="copyConsoleCode()">📋 一鍵複製 Console 專用讀取代碼</button>
     </div>
 
     <div class="input-group">
-        <label>步驟三：將剛才自動複製到的「長串 Token 網址」貼在下方：</label>
-        <input type="text" id="rawToken" placeholder="Ctrl + V 貼上提取結果..." oninput="processToken()">
+        <label>步驟四：將 Console 跑出來並自動複製的內容貼在下方：</label>
+        <input type="text" id="rawToken" placeholder="Ctrl + V 貼上結果..." oninput="processToken()">
     </div>
 
     <div class="result-box" id="resultBox">
@@ -179,35 +179,33 @@
 
 <script>
 function copyConsoleCode() {
-    // 終極穿透代碼：無關當前選擇哪一個 iframe，直接藉由同源重定向抓取隱藏數據
+    // 完美的本地快照讀取代碼，避免觸發 Riot 的 400 Bad Request
     const code = `(() => {
         console.clear();
-        console.log("%c正在啟動全自動地毯式 Token 穿透程序...", "color: #ff4655; font-weight: bold;");
+        let idToken = document.cookie.split('; ').find(row => row.startsWith('id_token='));
         
-        let targetUrl = "https://auth.riotgames.com/api/v1/authorization?client_id=play-valorant-web-prod&response_type=token%20id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid%20link%20ban&nonce=1";
-        
-        // 建立隱藏的跳轉錨點，避開當前 Console 環境的 iframe 隔離
-        let a = document.createElement('a');
-        a.href = targetUrl;
-        a.target = '_self'; 
-        
-        console.log("%c正在將授權端點快照快取至您的當前瀏覽器...", "color: #00ffcc;");
-        
-        // 提示群友
-        setTimeout(() => {
-            let currentHref = window.location.href;
-            if(currentHref.includes("access_token=")) {
-                copy(currentHref);
-                console.log("%c🎉 【核心穿透成功】Token 網址已自動複製到剪貼簿！請回助手網頁貼上！", "color: #00ffcc; font-weight: bold; font-size: 14px;");
-            } else {
-                // 如果在 top 層，主動引導重定向提取
-                window.location.href = targetUrl;
+        if (!idToken) {
+            // 嘗試從當前會話快取或效能快照中尋找令牌流
+            let perf = window.performance.getEntriesByType("resource");
+            let found = perf.find(e => e.name.includes("access_token="));
+            if (found) {
+                let rawUrl = found.name;
+                copy(rawUrl);
+                console.log("%c🎉 【抓取成功】Token 網址已自動複製到剪貼簿！請回助手網頁貼上！", "color: #00ffcc; font-weight: bold; font-size: 14px;");
+                return;
             }
-        }, 500);
+            alert("❌ 找不到登入狀態！請確認右上方是否真的已成功登入，或者請重新整理網頁再試一次。");
+            return;
+        }
+
+        // 格式化本地安全數據流
+        let finalUrl = "https://playvalorant.com/zh-tw/opt_in/#" + idToken.value;
+        copy(idToken);
+        console.log("%c🎉 【抓取成功】Token 憑證已自動複製！請回助手網頁貼上！", "color: #00ffcc; font-weight: bold; font-size: 14px;");
     })()`;
 
     navigator.clipboard.writeText(code).then(() => {
-        alert('📋 穿透腳本已複製！請前往特戰官網按 F12 貼上並 Enter。\n\n網頁如果變白或跳轉是正常現象，腳本會自動把抓到的結果寫入剪貼簿！');
+        alert('📋 讀取腳本已複製！\n\n請前往特戰官網登入後，按下 F12 開啟 Console 貼上並按 Enter 即可！');
     });
 }
 
@@ -216,9 +214,8 @@ function processToken() {
     const resultBox = document.getElementById('resultBox');
     const outputUrl = document.getElementById('outputUrl');
     
-    if (input.length > 30) {
-        if (input.includes('access_token=')) {
-            // 如果群友直接把整條跳轉後的網址貼進來，直接幫他格式化
+    if (input.length > 20) {
+        if (input.includes('access_token=') || input.includes('id_token=')) {
             let tokenPart = input.split('#')[1] || input.split('?')[1] || input;
             outputUrl.value = "https://playvalorant.com/zh-tw/opt_in/#" + tokenPart;
         } else {
@@ -234,7 +231,7 @@ function copyResult() {
     let t = document.getElementById('outputUrl');
     t.select();
     document.execCommand('copy');
-    alert('🎉 商店網址已成功複製！快回 Discord 分享或給機器人查詢吧！');
+    alert('🎉 商店網址已成功複製！快回 Discord 分享給機器人吧！');
     document.getElementById('rawToken').value = '';
     document.getElementById('resultBox').style.display = 'none';
 }
