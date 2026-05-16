@@ -22,186 +22,96 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            max-width: 550px;
+            max-width: 500px;
             width: 100%;
-            border: 1px solid #242b35;
-        }
-        h1 { font-size: 24px; margin-bottom: 10px; text-align: center; color: #ffffff; }
-        p { color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
-        .step-box {
-            background-color: #0b0e14;
-            border: 1px solid #242b35;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            text-align: left;
-        }
-        .step-title {
-            font-weight: bold;
-            font-size: 15px;
-            color: #ffffff;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn {
-            display: block;
-            background-color: #ffffff;
-            color: #0b0e14;
-            padding: 10px 20px;
-            font-weight: bold;
-            border-radius: 6px;
-            text-decoration: none;
             text-align: center;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-            font-size: 14px;
-            margin-top: 10px;
         }
-        .btn:hover { background-color: #e2e8f0; }
-        .btn-secondary {
-            background-color: #242b35;
-            color: #ffffff;
-            border: 1px solid #333d4a;
+        h1 { font-size: 24px; margin-bottom: 10px; color: #ffffff; }
+        p { color: #a0aab8; font-size: 14px; line-height: 1.6; margin-bottom: 25px; }
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 14px;
+            background-color: #ff4655;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            transition: background 0.2s;
         }
-        .btn-secondary:hover { background-color: #333d4a; }
-        .field { margin-top: 15px; }
-        label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 5px; font-weight: bold; }
-        .input-group { display: flex; gap: 10px; }
-        input {
-            flex: 1;
+        .btn:hover { background-color: #e53e4b; }
+        .btn-secondary { background-color: #2b313d; color: #a0aab8; }
+        .btn-secondary:hover { background-color: #363e4d; color: #ffffff; }
+        .result-box {
             background-color: #0b0e14;
-            border: 1px solid #242b35;
-            color: #ffffff;
-            padding: 10px;
+            padding: 15px;
             border-radius: 6px;
-            font-family: monospace;
-            font-size: 13px;
+            text-align: left;
+            margin-top: 20px;
+            display: none;
+            border: 1px solid #2b313d;
         }
-        .copy-btn {
-            background-color: #242b35;
-            color: #ffffff;
-            border: 1px solid #333d4a;
-            padding: 0 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        .copy-btn:hover { background-color: #333d4a; }
-        textarea {
+        .result-box label { font-size: 12px; color: #ff4655; font-weight: bold; display: block; margin-bottom: 5px; }
+        .result-box textarea {
             width: 100%;
             height: 60px;
-            background-color: #0b0e14;
-            border: 1px solid #242b35;
+            background: transparent;
+            border: none;
             color: #ffffff;
-            padding: 10px;
-            border-radius: 6px;
-            resize: none;
-            box-sizing: border-box;
             font-family: monospace;
             font-size: 12px;
+            resize: none;
+            outline: none;
+            padding: 0;
         }
+        .step { text-align: left; background: #1f2530; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
+        .step-title { font-weight: bold; margin-bottom: 5px; color: #ffffff; font-size: 15px; }
+        .step-desc { color: #a0aab8; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>✨ Zenith Token 獲取助手</h1>
-    <p style="text-align: center;">為了帳號安全，本工具不收集任何密碼。請依序操作以下兩個步驟：</p>
+    <p>為了帳號安全，本工具不索取帳密。請按照下方步驟獲取商店查詢金鑰。</p>
     
-    <div class="step-box">
-        <div class="step-title">1️⃣ 第一步：登入 Riot 帳號管理中心</div>
-        <p style="margin-bottom:0;">請點擊下方按鈕前往 Riot 官方網站登入您的帳號。若瀏覽器已經登入過，確認看得到自己的 Riot ID 即可。</p>
-        <a class="btn" href="https://account.riotgames.com/" target="_blank">👉 前往 Riot 官方登入</a>
+    <div class="step">
+        <div class="step-title">1️⃣ 第一步：登入官網</div>
+        <div class="step-desc">請先點擊下方按鈕登入 Riot 官方網站（若已登入可跳過）。</div>
+    </div>
+    <a href="https://account.riotgames.com/" target="_blank" class="btn btn-secondary">👉 前往 Riot 官方登入</a>
+
+    <div class="step">
+        <div class="step-title">2️⃣ 第二步：授權並複製網址</div>
+        <div class="step-desc">登入後回來點擊下方按鈕。會開啟一個微軟空白網頁，請<b>複製該網頁最上方的「整條長網址」</b>。</div>
+    </div>
+    <a href="https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf&scope=openid+link+ban&nonce=1" target="_blank" class="btn">🔗 點我獲取授權網址</a>
+
+    <div class="step">
+        <div class="step-title">3️⃣ 第三步：回到 Discord 查詢</div>
+        <div class="step-desc">回到 Discord 輸入 <code>/shop</code>，並把複製的長網址直接貼進 <code>access_token</code> 欄位即可！</div>
     </div>
 
-    <div class="step-box">
-        <div class="step-title">2️⃣ 第二步：獲取安全授權網址</div>
-        <p style="margin-bottom:0;">登入完成後，**不要關閉剛才的網頁**，直接點擊下方按鈕。它會在背景動態生成 Riot 要求的密鑰，並引導至一個顯示「無法連線到此頁面 (localhost)」的網頁，這是完全正常的！</p>
-        <button class="btn btn-secondary" id="authBtn" style="width: 100%;">🔗 點我獲取安全通道網址</button>
-    </div>
-
-    <div class="step-box" style="border-color: #3b82f6;">
-        <div class="step-title" style="color: #60a5fa;">3️⃣ 第三步：貼回網址並解析</div>
-        <p>請將剛剛第二步那個**「無法連線（localhost開頭）的整段網址列」**全部複製，並貼到下方框框中：</p>
-        <textarea id="urlInput" placeholder="請在此處貼上 localhost 開頭的完整網址..."></textarea>
-        <button class="btn" style="background-color: #3b82f6; color: white;" onclick="processUrl()">一鍵解析金鑰</button>
-
-        <div id="resultBox" style="display: none;">
-            <hr style="border: 0; border-top: 1px solid #242b35; margin: 15px 0;">
-            <h3 style="font-size: 15px; color: #4ade80; margin: 0 0 10px 0;">🎉 解析成功！</h3>
-            
-            <div class="field">
-                <label>ACCESS TOKEN</label>
-                <div class="input-group">
-                    <input type="text" id="accessToken" readonly>
-                    <button class="copy-btn" onclick="copyField('accessToken')">複製</button>
-                </div>
-            </div>
-
-            <div class="field">
-                <label>USER ID (PUID)</label>
-                <div class="input-group">
-                    <input type="text" id="userId" readonly>
-                    <button class="copy-btn" onclick="copyField('userId')">複製</button>
-                </div>
-            </div>
-            <p style="font-size: 11px; color: #64748b; margin-top: 10px; margin-bottom: 0;">💡 複製完成後，回到 Discord 輸入 <code>/shop</code> 並貼上這兩串數值即可查詢！</p>
-        </div>
+    <div class="result-box" id="resultBox">
+        <label>✨ 偵測到複製網址！請將下方內容完整複製貼回 Discord：</label>
+        <textarea id="outputUrl" readonly></textarea>
     </div>
 </div>
 
 <script>
-    // 隨機生成符合 Riot 安全機制的 nonce 字串
-    function generateNonce() {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let result = '';
-        for (let i = 0; i < 16; i++) {
-            result += chars.charAt(Math.floor(Math.random() * chars.length));
+    // 自動辨識貼入網址的超貼心小功能
+    window.addEventListener('hashchange', checkUrl);
+    window.addEventListener('load', checkUrl);
+
+    function checkUrl() {
+        if (window.location.hash || window.location.search) {
+            document.getElementById('resultBox').style.display = 'block';
+            document.getElementById('outputUrl').value = window.location.href;
         }
-        return result;
-    }
-
-    document.getElementById('authBtn').addEventListener('click', () => {
-        const nonce = generateNonce();
-        // 將動態生成的 nonce 完美塞入官方 RSO 網址
-        const dynamicUrl = `https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&nonce=${nonce}&redirect_uri=http%3A%2F%2Flocalhost%2Fredirect&response_type=token+id_token&scope=openid+link+ban`;
-        window.open(dynamicUrl, '_blank');
-    });
-
-    function processUrl() {
-        const url = document.getElementById('urlInput').value.trim();
-        try {
-            const accessMatch = url.match(/access_token=([^&]+)/);
-            const idTokenMatch = url.match(/id_token=([^&]+)/);
-            
-            if (accessMatch) {
-                document.getElementById('accessToken').value = accessMatch[1];
-                
-                if (idTokenMatch) {
-                    const payloadB64 = idTokenMatch[1].split('.')[1];
-                    const payload = JSON.parse(atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/')));
-                    document.getElementById('userId').value = payload.sub;
-                }
-                
-                document.getElementById('resultBox').style.display = 'block';
-            } else {
-                alert("網址格式不正確，找不到 access_token，請確保您有完整複製 localhost 的網址！");
-            }
-        } catch (e) {
-            alert("解析失敗，請檢查輸入的網址是否正確。");
-        }
-    }
-
-    function copyField(id) {
-        const copyText = document.getElementById(id);
-        copyText.select();
-        copyText.setSelectionRange(0, 99999);
-        navigator.clipboard.writeText(copyText.value);
-        alert("已複製到剪貼簿！");
     }
 </script>
+
 </body>
 </html>
