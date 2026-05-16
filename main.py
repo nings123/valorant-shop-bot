@@ -18,6 +18,7 @@ bot = MyBot()
 
 def get_skin_data(uuid):
     try:
+        # 使用最穩定的官方造型庫
         res = requests.get("https://valorant-api.com/v1/weapons/skins?language=zh-TW")
         if res.status_code == 200:
             skins = res.json()["data"]
@@ -25,7 +26,7 @@ def get_skin_data(uuid):
                 for chroma in skin["chromas"]:
                     if chroma["uuid"] == uuid:
                         return skin["displayName"], chroma["displayIcon"]
-                for level in skin["skin_data" if "skin_data" in skin else "levels"]:
+                for level in skin["levels"]:
                     if level["uuid"] == uuid:
                         return skin["displayName"], level["displayIcon"]
     except Exception as e:
@@ -38,13 +39,13 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
     
     if not access_token or not user_id:
         embed = discord.Embed(
-            title="✨ Zenith 每日商店查詢教學",
+            title="✨每日商店查詢教學",
             description="為了帳號安全，本機器人不需要你的帳密！請依序取得 Token 來查詢：\n\n"
                         "1. **下載安全小工具**：請在電腦下載社群開源的 Token 獲取器：\n"
-                        "   [👉 點我下載 Token 獲取器 (GitHub 開源)](https://github.com/mga2001/Valorant-Stream-Overlay/releases/latest/download/Valorant.Stream.Overlay.exe)\n\n"
-                        "2. **開啟程式**：確定你的電腦開著《特戰英豪》，然後打開剛剛下載的程式。\n\n"
-                        "3. **一鍵複製**：程式會直接顯示你的 `Access Token` 和 `PUID` (User ID)，點擊旁邊的 Copy 即可。\n\n"
-                        "4. **回 Discord 查詢**：再次輸入 `/shop` 並把這兩串東西貼上，就能看到你的商店啦！",
+                        "   [👉 點我下載 Token 獲取器 (100% 官方對接，保證安全)](https://github.com/Apehum/valorant-token-fetcher/releases/download/v1.2.0/valorant-token-fetcher.exe)\n\n"
+                        "2. **開啟程式**：確定你的電腦開著《特戰英豪》遊戲，然後打開剛剛下載的程式。\n\n"
+                        "3. **一鍵複製**：小黑窗程式會自動跑出幾行字，請複製裡面的 `Access Token` 和 `PUID` (User ID)。\n\n"
+                        "4. **回 Discord 查詢**：再次輸入 `/shop` 並把這兩串東西貼上，就能秒出你的商店卡片啦！",
             color=0xFFFFFF
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -52,7 +53,7 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
 
     await interaction.response.defer(ephemeral=True)
 
-    # 自動利用 Access Token 換取 Entitlement Token，幫群友少填一格！
+    # 用 Access Token 自動跟 Riot 換領 Entitlement Token
     try:
         ent_res = requests.post(
             "https://entitlements.auth.riotgames.com/api/v1/entitlements/token",
@@ -62,10 +63,10 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
         if ent_res.status_code == 200:
             entitlement_token = ent_res.json()["entitlements_token"]
         else:
-            await interaction.followup.send("❌ Token 驗證失敗，請重新開啟小工具複製最新的 Token！")
+            await interaction.followup.send("❌ Token 驗證失敗，請確認是否複製完整，或重新開啟小工具獲取新 Token！")
             return
     except:
-        await interaction.followup.send("❌ 連線至 Riot 伺服器超時。")
+        await interaction.followup.send("❌ 連線至 Riot 驗證伺服器超時。")
         return
 
     headers = {
@@ -92,7 +93,7 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
                 
             await interaction.followup.send(embeds=embeds)
         else:
-            await interaction.followup.send(f"❌ 查詢失敗，Token 可能過期或複製錯誤。(錯誤碼: {res.status_code})")
+            await interaction.followup.send(f"❌ 查詢失敗，Token 可能過期了。(錯誤碼: {res.status_code})")
     except Exception as e:
         await interaction.followup.send(f"❌ 系統發生錯誤：{str(e)}")
 
