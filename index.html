@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenith Token 獲取助手</title>
+    <title>Zenith Token 獲獲助手</title>
     <style>
         body { font-family: "Segoe UI", Arial, sans-serif; background-color: #0b0b0b; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
         .container { background-color: #111111; border: 1px solid #222222; padding: 40px 30px; border-radius: 4px; max-width: 500px; width: 100%; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
@@ -37,9 +37,9 @@
     </div>
 
     <div class="step-card">
-        <span class="step-num">方法二：長網址防呆裁剪框</span>
+        <span class="step-num">方法二：長網址防呆裁剪框（最穩當推薦）</span>
         <div class="step-text">
-            如果點擊書籤被瀏覽器擋住，請把跳轉後那一長串長網址複製，貼到下方格子裡：
+            如果點擊書籤被瀏覽器擋住，請把跳轉後那一長串帶有 404 或 zh-tw 的長網址複製，貼到下方格子裡：
         </div>
         <textarea id="inputUrl" placeholder="請在此貼上官方那一長串長網址..."></textarea>
         <button class="tool-btn" onclick="processUrl()">➔ 一鍵轉換為完美商店短網址</button>
@@ -48,16 +48,19 @@
 
 <script>
 function processUrl() {
-    let input = document.getElementById('inputUrl').value;
+    let input = document.getElementById('inputUrl').value.trim();
     if(!input.includes('access_token')) {
         alert('請確認輸入的是正確的特戰金鑰長網址！');
         return;
     }
-    let hash = input.substring(input.indexOf('#'));
-    let params = new URLSearchParams(hash.replace('#','?'));
-    let token = params.get('access_token');
     
-    // 自動幫群友補上 zh-tw，同時把後方的 id_token 廢話切掉，達成黃金比例
+    // 用精確的字串切割，找出 access_token= 到第一個 & 之間的所有內容
+    let startIdx = input.indexOf('access_token=') + 13;
+    let endIdx = input.indexOf('&', startIdx);
+    
+    let token = (endIdx !== -1) ? input.substring(startIdx, endIdx) : input.substring(startIdx);
+    
+    // 強制補上機器人死板要求的 zh-tw 網域字串
     let cleanUrl = 'https://playvalorant.com/zh-tw/opt_in/#access_token=' + token;
     
     let el = document.createElement('textarea');
@@ -66,7 +69,7 @@ function processUrl() {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    alert('🎉 轉換並複製成功！\n\n已自動補上 zh-tw 并極致縮短！\n請立刻去 Discord 貼上送出吧！');
+    alert('🎉 轉換並複製成功！\n\n已由網頁完成精準縮短，且完美保留 zh-tw！\n請立刻去 Discord 貼上送出吧！');
 }
 </script>
 
