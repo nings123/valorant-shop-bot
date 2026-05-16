@@ -2,6 +2,9 @@ import discord
 from discord import app_commands
 import requests
 import os
+import re
+import base64
+import json
 
 # 從環境變數讀取 Bot Token
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
@@ -18,9 +21,9 @@ bot = MyBot()
 
 @bot.event
 async def on_ready():
-    print(f"🤖 機器人 {bot.user} 已上線，一鍵商店查詢就緒！")
+    print(f"🤖 機器人 {bot.user} 已上線，超完美一鍵商店查詢就緒！")
 
-# 獲取武器皮膚資料
+# 獲取武器皮膚資料的輔助函式
 def get_skin_data(uuid):
     try:
         res = requests.get("https://valorant-api.com/v1/weapons/skins?language=zh-TW")
@@ -40,29 +43,44 @@ def get_skin_data(uuid):
 # Discord 斜線指令：/shop
 @bot.tree.command(name="shop", description="查詢你的每日特戰商店")
 @app_commands.describe(
-    access_token="輸入複製好的 Access Token (通常是 ey... 開頭的長字串)", 
-    user_id="輸入複製好的 User ID (PUID)"
+    access_token="直接貼上點開連結後，最上方網址列的『整條完整長網址』", 
+    user_id="此欄位『完全不用填』，留空即可！"
 )
-async def shop(interaction: discord.Interaction, access_token: str = None, user_id: str = None):
+async def shop(interaction: discord.Interaction, access_token: str, user_id: str = None):
     
-    # 只要缺少任何一個欄位，就跳出精心排版、絕對不會壞的一鍵獲取教學
+    # 【超級防呆解析】不論群友是填單一 Token 還是直接丟整條長網址，通通在後端自動切開
+    if "access_token=" in access_token or "login.live.com" in access_token:
+        url_input = access_token
+        access_match = re.search(r'access_token=([^&]+)', url_input)
+        id_token_match = re.search(r'id_token=([^&]+)', url_input)
+        
+        if access_match:
+            access_token = access_match.group(1)
+            # 自動從 id_token 解碼出使用者的 Riot PUID (user_id)
+            if id_token_match:
+                try:
+                    payload_b64 = id_token_match.group(1).split('.')[1]
+                    payload_b64 += '=' * (-len(payload_b64) % 4)
+                    payload = json.loads(base64.urlsafe_b64decode(payload_b64).decode('utf-8'))
+                    user_id = payload.get('sub')
+                except:
+                    pass
+
+    # 如果欄位沒帶對，或根本沒填，就噴出超漂亮的防呆教學卡片
     if not access_token or not user_id:
         embed = discord.Embed(
             title="✨ 每日商店查詢教學",
             description=(
-                "為了帳號安全，本群不收集任何密碼。請依序點擊下方官方安全通道：\n\n"
+                "為了帳號安全，本群不收集任何密碼。請依序點擊官方認證通道：\n\n"
                 "1️⃣ **第一步：登入官網**\n"
-                "請先點擊前往完成登入（看到自己的 Riot ID 即可）：\n"
-                "[👉 點我前往 Riot 官方登入](https://account.riotgames.com/)\n\n"
+                "請先用瀏覽器登入 [👉 Riot 官方帳號管理中心](https://account.riotgames.com/)\n"
+                "*(必須確認看到自己的 Riot ID 登入成功喔！)*\n\n"
                 "2️⃣ **第二步：一鍵獲取 Token（用電腦點擊）**\n"
-                "登入後**不要關閉分頁**，直接點擊下方安全通道。它會開啟官方認證分頁，並直接把你要的程式碼顯示在畫面上，**完全不會跳出 404！**\n"
-                "[🔗 點我一鍵獲取安全 Token](https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1)\n\n"
-                "3️⃣ **第三步：複製並貼回查詢**\n"
-                "點過去後，請看瀏覽器最上方的**網址列**，你會看到一長串網址：\n"
-                "❌ **不要管網頁畫面寫什麼！** 我們只要複製網址列裡面的關鍵字：\n\n"
-                "◽ 複製 `access_token=` 後面到 `&` 之間的那串超長字串（以 `ey` 開頭）。\n"
-                "◽ 複製 `sub=` 後面那串英數混合的短字串（這就是你的 User ID）。\n\n"
-                "再次回到 Discord 輸入 `/shop` 並貼上這兩串數值，就能秒出商店卡片啦！"
+                "登入成功後**不要關閉網頁**，直接點擊下方安全通道按鈕。它會開啟官方認證，並彈出一個微軟的空白網頁，這代表完全成功！\n"
+                "[🔗 點我一鍵獲取安全 Token](https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf&scope=openid+link+ban&nonce=1)\n\n"
+                "3️⃣ **第三步：複製網址並貼回查詢**\n"
+                "請把那個微軟網頁最上方網址列的**「整條完整長網址」全部複製起來**。\n\n"
+                "再次回到 Discord 輸入 `/shop`，直接把網址貼在 `access_token` 第一個框框，**第二個框框完全不用填**，直接按下 Enter 送出即可！"
             ),
             color=0xFFFFFF
         )
@@ -73,17 +91,6 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
     await interaction.response.defer(ephemeral=True)
 
     try:
-        # 清除可能不小心複製到的網址前後贅詞
-        if "access_token=" in access_token:
-            import re
-            match = re.search(r'access_token=([^&]+)', access_token)
-            if match: access_token = match.group(1)
-            
-        if "sub=" in user_id:
-            import re
-            match = re.search(r'sub=([^&]+)', user_id)
-            if match: user_id = match.group(1)
-
         # 1. 獲取 Entitlement Token
         ent_res = requests.post(
             "https://entitlements.auth.riotgames.com/api/v1/entitlements/token",
@@ -92,7 +99,7 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
         )
         
         if ent_res.status_code != 200:
-            await interaction.followup.send("❌ Token 驗證失敗！請確認是否複製完整，或是 Token 已經過期，請重新點擊連結獲取。")
+            await interaction.followup.send("❌ 網址解析失敗或已過期！請確認是否有『完整複製』整條長網址，並重新嘗試。")
             return
             
         entitlement_token = ent_res.json()["entitlements_token"]
@@ -126,7 +133,7 @@ async def shop(interaction: discord.Interaction, access_token: str = None, user_
 
             await interaction.followup.send(embeds=embeds)
         else:
-            await interaction.followup.send(f"❌ 查詢失敗，Riot 伺服器拒絕請求。（錯誤碼：{shop_res.status_code}）")
+            await interaction.followup.send(f"❌ 查詢失敗，Token 可能已失效，請重新點擊連結複製網址。（錯誤碼：{shop_res.status_code}）")
 
     except Exception as e:
         await interaction.followup.send(f"❌ 系統發生錯誤：{str(e)}")
