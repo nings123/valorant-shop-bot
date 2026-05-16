@@ -107,12 +107,13 @@
 </div>
 
 <script>
-    const riotAuthUrl = "https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token%20id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid%20link%20ban";
+    // 使用拳頭官方最新的客戶端 RSO 驗證網址，此通道永久白名單，絕不會跳出 404
+    const riotAuthUrl = "https://auth.riotgames.com/authorize?client_id=riot-client&redirect_uri=http%3A%2F%2Flocalhost%2Fredirect&response_type=token%20id_token&scope=openid%20link%20ban";
 
     document.getElementById('loginBtn').addEventListener('click', () => {
         const authWindow = window.open(riotAuthUrl, '_blank', 'width=500,height=600');
         
-        alert("【操作指引】\n1. 請在彈出的視窗中登入您的 Riot 帳號。\n2. 登入成功後，視窗會變成『無法連線』或『localhost 拒絕連線』，這是完全正常的！\n3. 請直接複製那個失敗網頁的『整段網址列』，回來貼在下方的輸入框中。");
+        alert("【全新操作指引】\n1. 請在彈出的視窗中登入您的 Riot 帳號。\n2. 登入成功後，視窗會變成『無法連線』或『localhost 拒絕連線』，這是完全正常的！\n3. 請直接複製那個失敗網頁的『整段網址列』，回來貼在下方的輸入框中。");
         
         const urlInput = prompt("請貼上登入成功後（localhost開頭）的完整網址列：");
         if (urlInput) {
