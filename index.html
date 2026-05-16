@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith 商店查詢 Token 獲取器</title>
+    <style>
+        body { background-color: #0F1115; color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #161920; padding: 30px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); text-align: center; max-width: 400px; width: 90%; border: 1px solid #2A2E3D; }
+        h2 { color: #FF4655; margin-top: 0; font-size: 24px; }
+        p { color: #A0A5B5; font-size: 14px; line-height: 1.6; }
+        .btn { display: inline-block; background-color: #FF4655; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 15px; cursor: pointer; transition: 0.2s; border: none; width: 100%; box-sizing: border-box; }
+        .btn:hover { background-color: #E43B47; }
+        .token-box { display: none; margin-top: 20px; text-align: left; }
+        label { font-size: 12px; color: #808595; display: block; margin-top: 10px; font-weight: bold; }
+        input { width: 100%; background: #222531; border: 1px solid #3A3E4D; color: #FFF; padding: 10px; border-radius: 4px; margin-top: 5px; box-sizing: border-box; font-size: 13px; }
+        .copy-all { background: #ffffff; color: #000; }
+        .copy-all:hover { background: #e0e0e0; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Zenith 金鑰獲取器</h2>
+    <p id="desc">點擊下方按鈕前往 Riot 官方進行授權登入，登入成功後將會自動為您解析查詢金鑰。本網頁為純前端開源架構，絕不記錄任何隱私資訊。</p>
+    
+    <button id="authBtn" class="btn" onclick="startAuth()">🔑 點我開始官方授權登入</button>
+
+    <div id="tokenArea" class="token-box">
+        <p style="color: #4CC9F0; font-weight: bold; text-align: center;">🎉 授權成功！請點擊複製：</p>
+        
+        <label>Access Token</label>
+        <input type="text" id="accessToken" readonly onclick="this.select()">
+        
+        <label>User ID (PUID)</label>
+        <input type="text" id="userId" readonly onclick="this.select()">
+
+        <p style="font-size: 11px; color: #808595; margin-top: 15px;">👉 複製完成後，回到 Discord 輸入 <code>/shop</code> 貼上對應的格子即可查詢！</p>
+    </div>
+</div>
+
+<script>
+const CLIENT_ID = 'riot-client';
+const REDIRECT_URI = window.location.origin + window.location.pathname;
+
+function startAuth() {
+    const authUrl = `https://auth.riotgames.com/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token%20id_token&scope=openid%20link%20accounts&nonce=1`;
+    window.location.href = authUrl;
+}
+
+window.onload = function() {
+    const hash = window.location.hash;
+    if (hash && hash.includes('access_token')) {
+        document.getElementById('authBtn').style.display = 'none';
+        document.getElementById('desc').style.display = 'none';
+        document.getElementById('tokenArea').style.display = 'block';
+
+        const accessToken = hash.match(/access_token=([^&]+)/)[1];
+        const idToken = hash.match(/id_token=([^&]+)/)[1];
+        
+        // 解析 User ID
+        try {
+            const base64Url = idToken.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            const payload = JSON.parse(jsonPayload);
+            
+            document.getElementById('accessToken').value = accessToken;
+            document.getElementById('userId').value = payload.sub;
+        } catch (e) {
+            alert('金鑰解析失敗，請重新登入試試！');
+        }
+    }
+}
+</script>
+</body>
+</html>
