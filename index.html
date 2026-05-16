@@ -19,7 +19,7 @@
         .result-box { margin-top: 20px; background: #000; padding: 15px; border-radius: 4px; display: none; text-align: left; }
         .result-title { color: #ff4655; font-size: 12px; font-weight: bold; margin-bottom: 5px; }
         textarea { width: 100%; height: 80px; background: #111; border: 1px solid #222; color: #00ffcc; font-size: 11px; resize: none; word-break: break-all; margin-top: 5px; padding: 10px; box-sizing: border-box; border-radius: 4px; }
-        .status-msg { color: #ffcc00; font-size: 13px; margin-top: 10px; text-align: left; min-height: 20px; }
+        .status-msg { color: #ffcc00; font-size: 13px; margin-top: 10px; text-align: left; min-height: 20px; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -55,8 +55,8 @@
 </div>
 
 <script>
-// 🚨 這裡要填入你剛才在 Render 部署成功後拿到的免費後端網址！
-const BACKEND_URL = "https://你的新後端網址.onrender.com";
+// 已自動連結到你剛剛建好的 Render 後端服務！
+const BACKEND_URL = "https://zenith-auth-daily.onrender.com";
 
 async function startAuth() {
     const user = document.getElementById('username').value.trim();
@@ -71,13 +71,13 @@ async function startAuth() {
     statusMsg.innerText = "⏳ 正在啟動後端轉接橋樑（若伺服器在休眠，可能需要 15-30 秒）...";
 
     try {
-        // Step 1: 透過後端初始化 Riot 授權
+        // Step 1: 初始化 Riot 授權
         let initRes = await fetch(`${BACKEND_URL}/api/auth/init`, { method: "POST" });
         if(!initRes.ok) throw new Error("後端初始化失敗");
         
         statusMsg.innerText = "🔑 正在將憑證安全送往 Riot 伺服器驗證...";
 
-        // Step 2: 透過後端提交帳密
+        // Step 2: 提交帳密
         let loginRes = await fetch(`${BACKEND_URL}/api/auth/login`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -129,16 +129,16 @@ async function startAuth() {
                 statusMsg.innerText = "";
             }
         } else {
-            alert("登入失敗：請確認帳號密碼是否輸入正確！");
+            alert("登入失敗：請確認帳號密碼（或驗證碼）是否輸入正確！");
             btn.disabled = false;
             statusMsg.innerText = "❌ 驗證失敗，請重試。";
         }
 
     } catch (err) {
         console.error(err);
-        alert("連線後端發生錯誤！請確認你的 Render 後端網址有沒有填錯，或確認伺服器狀態是否為 Live。");
+        alert("連線後端發生錯誤！請確認 Render 伺服器狀態。");
         btn.disabled = false;
-        statusMsg.innerText = "❌ 連線錯誤，請確認後端網址。";
+        statusMsg.innerText = "❌ 連線錯誤，請重試。";
     }
 }
 
