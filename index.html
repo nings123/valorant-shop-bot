@@ -5,99 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zenith Token 獲取助手</title>
     <style>
-        body {
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background-color: #0b0b0b;
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .container {
-            background-color: #111111;
-            border: 1px solid #222222;
-            padding: 40px 30px;
-            border-radius: 4px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-            max-width: 500px;
-            width: 100%;
-            text-align: center;
-        }
-        h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; }
-        .subtitle { color: #888888; font-size: 13px; margin-bottom: 30px; letter-spacing: 1px; }
-        .step-card {
-            background-color: #161616;
-            border: 1px solid #1c1c1c;
-            padding: 20px;
-            text-align: left;
-            margin-bottom: 20px;
-            border-radius: 2px;
-        }
-        .step-num { font-size: 12px; color: #ff4655; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; display: block; letter-spacing: 1px; }
+        body { font-family: "Segoe UI", Arial, sans-serif; background-color: #0b0b0b; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .container { background-color: #111111; border: 1px solid #222222; padding: 40px 30px; border-radius: 4px; max-width: 500px; width: 100%; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
+        h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; color: #ff4655; }
+        .subtitle { color: #888888; font-size: 13px; margin-bottom: 30px; }
+        .step-card { background-color: #161616; border: 1px solid #1c1c1c; padding: 20px; text-align: left; margin-bottom: 20px; border-radius: 2px; }
+        .step-num { font-size: 12px; color: #ff4655; font-weight: 800; margin-bottom: 5px; display: block; }
         .step-text { color: #cccccc; font-size: 14px; line-height: 1.6; }
-        
-        .drag-btn {
-            display: block;
-            width: 100%;
-            padding: 18px;
-            background-color: #ff4655;
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 16px;
-            letter-spacing: 1px;
-            border-radius: 4px;
-            box-sizing: border-box;
-            border: 2px dashed #ffffff;
-            cursor: move;
-            text-transform: uppercase;
-            text-align: center;
-            margin: 20px 0;
-            box-shadow: 0 0 15px rgba(255, 70, 85, 0.4);
-            transition: transform 0.2s;
-        }
-        .drag-btn:hover {
-            transform: scale(1.02);
-            background-color: #e33e4d;
-        }
-        code { background: #000000; padding: 3px 6px; border-radius: 2px; color: #ff4655; font-family: monospace; font-size: 13px; }
+        .drag-btn { display: block; width: 100%; padding: 18px; background-color: #ff4655; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 16px; border-radius: 4px; border: 2px dashed #ffffff; cursor: move; text-align: center; margin: 20px 0; box-shadow: 0 0 15px rgba(255, 70, 85, 0.4); }
+        textarea { width: 100%; height: 60px; background: #000; border: 1px solid #333; color: #fff; padding: 10px; box-sizing: border-box; margin-top: 10px; border-radius: 4px; resize: none; font-size: 12px; }
+        .tool-btn { background: #333; color: #fff; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin-top: 10px; width: 100%; font-weight: bold; }
+        .tool-btn:hover { background: #444; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Zenith Token Assistant</h1>
-    <div class="subtitle">特戰每日商店查詢金鑰安全獲取工具</div>
+    <div class="subtitle">特戰每日商店金鑰極速獲取工具</div>
     
     <div class="step-card">
-        <span class="step-num">Step 01</span>
+        <span class="step-num">方法一：全新一代無痛書籤</span>
         <div class="step-text">
-            請按下鍵盤 <code>Ctrl + Shift + B</code> 顯示瀏覽器的「書籤列」。
+            1. 顯示瀏覽器書籤列（Ctrl+Shift+B）。<br>
+            2. 把下方按鈕<b>重新拖曳</b>到書籤列覆蓋舊的。<br>
+            3. 在特戰官網登入後點擊書籤，跳出成功後直接去 Discord 貼上！
         </div>
-    </div>
-
-    <div class="step-card">
-        <span class="step-num">Step 02</span>
-        <div class="step-text">
-            把舊的 Zenith 書籤按右鍵刪除，然後把下方<b>紅色虛線按鈕</b>重新【<b>拖曳到書籤列</b>】。
-        </div>
-        
-        <a class="drag-btn" href="javascript:(function(){const hash=window.location.hash;if(hash.includes('access_token')){let params=new URLSearchParams(hash.replace('#','?'));let token=params.get('access_token');let cleanUrl='https://playvalorant.com/opt_in/#access_token='+token;const el=document.createElement('textarea');el.value=cleanUrl;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 獲取成功！\n\n網址已完成「極致防吃字縮減」並去除了 zh-tw！\n現在貼進 Discord 絕對不會再被砍斷囉！');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
+        <a class="drag-btn" href="javascript:(function(){const hash=window.location.hash;if(hash.includes('access_token')){let params=new URLSearchParams(hash.replace('#','?'));let token=params.get('access_token');let cleanUrl=window.location.origin+window.location.pathname+'#access_token='+token;const el=document.createElement('textarea');el.value=cleanUrl;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 複製成功！\n\n網址已完成「極致縮短防吃字」，且符合機器人白名單！\n請直接回 Discord 貼上送出！');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri='+encodeURIComponent(window.location.href)+'&scope=openid+link+ban&nonce=1');}})();">
             ➔ 拖曳我到書籤列 ➔
         </a>
     </div>
 
-    <div class="step-card" style="margin-bottom: 0;">
-        <span class="step-num">Step 03</span>
+    <div class="step-card">
+        <span class="step-num">方法二：手動防呆裁剪（如果書籤被瀏覽器擋住）</span>
         <div class="step-text">
-            點擊書籤後，網頁會自動跳轉。當畫面上彈出「獲取成功」時，直接去 Discord 貼上就大功告成了！
+            如果點擊書籤沒反應，請把跳轉後那一長串帶有 404 或 zh-tw 的長網址複製，貼到下方格子裡：
         </div>
+        <textarea id="inputUrl" placeholder="請在此貼上官方那一長串長網址..."></textarea>
+        <button class="tool-btn" onclick="processUrl()">➔ 一鍵轉換成 Zenith 專用短網址</button>
     </div>
 </div>
+
+<script>
+function processUrl() {
+    let input = document.getElementById('inputUrl').value;
+    if(!input.includes('access_token')) {
+        alert('請確認輸入的是正確的特戰金鑰長網址！');
+        return;
+    }
+    let hash = input.substring(input.indexOf('#'));
+    let params = new URLSearchParams(hash.replace('#','?'));
+    let token = params.get('access_token');
+    
+    // 用當前 GitHub 網址拼裝
+    let cleanUrl = window.location.origin + window.location.pathname + '#access_token=' + token;
+    
+    let el = document.createElement('textarea');
+    el.value = cleanUrl;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    alert('🎉 轉換並複製成功！\n\n已自動去除 zh-tw 並極致縮短！\n請立刻去 Discord 貼上送出吧！');
+}
+</script>
 
 </body>
 </html>
