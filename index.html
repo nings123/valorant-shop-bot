@@ -29,21 +29,23 @@
     <div class="subtitle">放棄麻煩的書籤！輸入帳密一鍵極速獲取網址</div>
     
     <div id="loginForm">
-        <div class="input-group">
-            <label>RIOT 登入帳號 (Username)</label>
-            <input type="text" id="username" placeholder="請輸入遊戲登入帳號...">
-        </div>
-        <div class="input-group">
-            <label>RIOT 登入密碼 (Password)</label>
-            <input type="password" id="password" placeholder="請輸入遊戲登入密碼...">
+        <div id="credentialsArea">
+            <div class="input-group">
+                <label>RIOT 登入帳號 (Username)</label>
+                <input type="text" id="username" placeholder="請輸入遊戲登入帳號...">
+            </div>
+            <div class="input-group">
+                <label>RIOT 登入密碼 (Password)</label>
+                <input type="password" id="password" placeholder="請輸入遊戲登入密碼...">
+            </div>
         </div>
         
         <div class="input-group" id="mfaGroup" style="display: none;">
-            <label style="color: #00ffcc; font-weight: bold;">🔒 請輸入信箱收到的 6 位數二步驟驗證碼</label>
-            <input type="text" id="mfaCode" placeholder="請打這裡...">
+            <label style="color: #00ffcc; font-weight: bold;">🔒 請輸入電子郵件收到的 6 位數二步驟驗證碼</label>
+            <input type="text" id="mfaCode" placeholder="請輸入 6 位數代碼...">
         </div>
 
-        <button class="btn" id="submitBtn" onclick="startAuth()">➔ 一鍵安全獲取商店網址</button>
+        <button class="btn" id="submitBtn" onclick="processAuth()">➔ 一鍵安全獲取商店網址</button>
         <div class="status-msg" id="statusMsg"></div>
     </div>
 
@@ -56,62 +58,57 @@
 
 <script>
 const BACKEND_URL = "https://zenith-auth-daily.onrender.com";
-let isMfaStage = false;
+let currentStage = "LOGIN"; // 狀態機：LOGIN 或者是 MFA
 
-async function startAuth() {
-    const user = document.getElementById('username').value.trim();
-    const pass = document.getElementById('password').value.trim();
-    const mfa = document.getElementById('mfaCode').value.trim();
+async function processAuth() {
     const btn = document.getElementById('submitBtn');
     const statusMsg = document.getElementById('statusMsg');
     
-    if(!user || !pass) { alert('請填寫帳號和密碼！'); return; }
-    
     btn.disabled = true;
-    
-    // 如果目前已經是 2FA 階段
-    if (isMfaStage) {
-        if (!mfa) { alert("請輸入你收到的 6 位數驗證碼！"); btn.disabled = false; return; }
-        statusMsg.innerText = "⏳ 正在驗證二步驟驗證碼...";
+
+    if (currentStage === "LOGIN") {
+        const user = document.getElementById('username').value.trim();
+        const pass = document.getElementById('password').value.trim();
+        if(!user || !pass) { alert('請填寫帳號和密碼！'); btn.disabled = false; return; }
+
+        statusMsg.innerText = "🔑 正在向 Riot 伺服器提交憑證驗證...";
         try {
-            let mfaRes = await fetch(`${BACKEND_URL}/api/auth/login`, {
-                method: "PUT",
+            let res = await fetch(`${BACKEND_URL}/api/auth/login`, {
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ type: "mfa", code: mfa, remember: true })
+                body: JSON.stringify({ username: user, password: pass })
             });
-            let mfaData = await mfaRes.json();
-            handleRiotResponse(mfaData);
-        } catch(e) {
-            alert("驗證碼提交失敗，請重試");
+            let data = await res.json();
+            handleResponse(data);
+        } catch (err) {
+            alert("連線後端發生錯誤！");
             btn.disabled = false;
         }
-        return;
-    }
+    } else if (currentStage === "MFA") {
+        const mfa = document.getElementById('mfaCode').value.trim();
+        if(!mfa) { alert('請輸入驗證碼！'); btn.disabled = false; return; }
 
-    // 正常帳密登入階段
-    statusMsg.innerText = "⏳ 正在啟動後端轉接橋樑...";
-    try {
-        let initRes = await fetch(`${BACKEND_URL}/api/auth/init`, { method: "POST" });
-        statusMsg.innerText = "🔑 正在將憑證送往 Riot 伺服器驗證...";
-
-        let loginRes = await fetch(`${BACKEND_URL}/api/auth/login`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ type: "auth", username: user, password: pass, remember: true })
-        });
-        let loginData = await loginRes.json();
-        handleRiotResponse(loginData);
-    } catch (err) {
-        alert("連線發生錯誤，請確認後端狀態！");
-        btn.disabled = false;
+        statusMsg.innerText = "⏳ 正在送出二步驟驗證碼...";
+        try {
+            let res = await fetch(`${BACKEND_URL}/api/auth/mfa`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ code: mfa })
+            });
+            let data = await res.json();
+            handleResponse(data);
+        } catch (err) {
+            alert("驗證碼發送錯誤！");
+            btn.disabled = false;
+        }
     }
 }
 
-function handleRiotResponse(data) {
+function handleResponse(data) {
     const btn = document.getElementById('submitBtn');
     const statusMsg = document.getElementById('statusMsg');
 
-    // 成功抓到網址
+    // 情況 A：成功拿到 Token 網址
     if (data.response && data.response.parameters && data.response.parameters.uri) {
         let originalUri = data.response.parameters.uri;
         let match = originalUri.match(/access_token=([^&]+)/);
@@ -124,17 +121,18 @@ function handleRiotResponse(data) {
         return;
     }
 
-    // 觸發 2FA 二步驟驗證
+    // 情況 B：觸發二步驟驗證 (Riot 回傳物件裡有 type: "mfa" 或是 error: "mfa_required")
     if (data.type === "mfa" || data.error === "mfa_required") {
-        document.getElementById('mfaGroup').style.display = "block";
-        statusMsg.innerText = "🔒 偵測到二步驟驗證！請查收信箱並填入 6 位數驗證碼，然後再次點擊登入按鈕！";
-        isMfaStage = true;
+        document.getElementById('credentialsArea').style.display = "none"; // 隱藏帳密框
+        document.getElementById('mfaGroup').style.display = "block";        // 顯示驗證碼框
+        statusMsg.innerText = "🔒 偵測到驗證保護！請至信箱收信，打上 6 位數驗證碼後再次點擊按鈕！";
+        currentStage = "MFA";
         btn.disabled = false;
         return;
     }
 
-    // 真的失敗
-    alert("登入失敗，請確認帳號密碼是否正確，或是有打錯驗證碼。");
+    // 情況 C：密碼或代碼真的打錯
+    alert("驗證失敗：請檢查輸入是否正確，或重新整理再試一次。");
     btn.disabled = false;
     statusMsg.innerText = "❌ 驗證失敗";
 }
@@ -143,8 +141,9 @@ function copyResult() {
     let t = document.getElementById('outputUrl');
     t.select();
     document.execCommand('copy');
-    alert('🎉 複製成功！快回 Discord 貼上吧！');
+    alert('🎉 複製成功！');
 }
 </script>
+
 </body>
 </html>
