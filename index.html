@@ -64,7 +64,6 @@ function processToken() {
     const outputUrl = document.getElementById('outputUrl');
     
     if (input.length > 50) {
-        // 自動幫群友包裝成 Discord 機器人看得懂的標準格式
         outputUrl.value = "https://playvalorant.com/zh-tw/opt_in/#access_token=" + input;
         resultBox.style.display = "block";
     } else {
