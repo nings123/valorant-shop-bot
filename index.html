@@ -22,35 +22,52 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            max-width: 500px;
+            max-width: 550px;
             width: 100%;
-            text-align: center;
             border: 1px solid #242b35;
         }
-        h1 { font-size: 24px; margin-bottom: 10px; color: #ffffff; }
-        p { color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 25px; }
+        h1 { font-size: 24px; margin-bottom: 10px; text-align: center; color: #ffffff; }
+        p { color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+        .step-box {
+            background-color: #0b0e14;
+            border: 1px solid #242b35;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .step-title {
+            font-weight: bold;
+            font-size: 15px;
+            color: #ffffff;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
         .btn {
-            display: inline-block;
+            display: block;
             background-color: #ffffff;
             color: #0b0e14;
-            padding: 12px 24px;
+            padding: 10px 20px;
             font-weight: bold;
             border-radius: 6px;
             text-decoration: none;
+            text-align: center;
             transition: all 0.2s;
             cursor: pointer;
             border: none;
-            width: 100%;
-            box-sizing: border-box;
-            font-size: 16px;
+            font-size: 14px;
+            margin-top: 10px;
         }
-        .btn:hover { background-color: #e2e8f0; transform: translateY(-1px); }
-        .result-box {
-            margin-top: 25px;
-            text-align: left;
-            display: none;
+        .btn:hover { background-color: #e2e8f0; }
+        .btn-secondary {
+            background-color: #242b35;
+            color: #ffffff;
+            border: 1px solid #333d4a;
         }
-        .field { margin-bottom: 15px; }
+        .btn-secondary:hover { background-color: #333d4a; }
+        .field { margin-top: 15px; }
         label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 5px; font-weight: bold; }
         .input-group { display: flex; gap: 10px; }
         input {
@@ -73,55 +90,72 @@
             font-size: 13px;
         }
         .copy-btn:hover { background-color: #333d4a; }
+        textarea {
+            width: 100%;
+            height: 60px;
+            background-color: #0b0e14;
+            border: 1px solid #242b35;
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 6px;
+            resize: none;
+            box-sizing: border-box;
+            font-family: monospace;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>✨ Zenith Token 獲取助手</h1>
-    <p>為了帳號安全，本群不收集任何密碼。請點擊下方按鈕登入 Riot 官方網站，登入成功後會自動為您解析出查詢所需的金鑰代碼。</p>
+    <p style="text-align: center;">為了帳號安全，本工具不收集任何密碼。請依序操作以下兩個步驟：</p>
     
-    <button class="btn" id="loginBtn">第一步：前往 Riot 官方登入</button>
+    <div class="step-box">
+        <div class="step-title">1️⃣ 第一步：登入 Riot 帳號管理中心</div>
+        <p style="margin-bottom:0;">請點擊下方按鈕前往 Riot 官方網站登入您的帳號。若瀏覽器已經登入過，確認看得到自己的 Riot ID 即可。</p>
+        <a class="btn" href="https://account.riotgames.com/" target="_blank">👉 前往 Riot 官方登入</a>
+    </div>
 
-    <div class="result-box" id="resultBox">
-        <hr style="border: 0; border-top: 1px solid #242b35; margin: 25px 0;">
-        <h3 style="margin-bottom: 15px; font-size: 16px; color: #4ade80;">🎉 成功解析 Token！</h3>
-        
-        <div class="field">
-            <label>ACCESS TOKEN</label>
-            <div class="input-group">
-                <input type="text" id="accessToken" readonly>
-                <button class="copy-btn" onclick="copyField('accessToken')">複製</button>
-            </div>
-        </div>
+    <div class="step-box">
+        <div class="step-title">2️⃣ 第二步：獲取安全授權網址</div>
+        <p style="margin-bottom:0;">登入完成後，**不要關閉剛才的網頁**，直接點擊下方按鈕。它會在新分頁開啟一個寫著「無法連線到此頁面 (localhost)」的網頁，這是完全正常的！</p>
+        <a class="btn btn-secondary" href="https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token%20id_token&redirect_uri=http%3A%2F%2Flocalhost%2Fredirect&scope=openid%20link%20ban" target="_blank">🔗 點我獲取安全通道網址</a>
+    </div>
 
-        <div class="field">
-            <label>USER ID (PUID)</label>
-            <div class="input-group">
-                <input type="text" id="userId" readonly>
-                <button class="copy-btn" onclick="copyField('userId')">複製</button>
+    <div class="step-box" style="border-color: #3b82f6;">
+        <div class="step-title" style="color: #60a5fa;">3️⃣ 第三步：貼回網址並解析</div>
+        <p>請將剛剛第二步那個**「無法連線（localhost開頭）的整段網址列」**全部複製，並貼到下方框框中：</p>
+        <textarea id="urlInput" placeholder="請在此處貼上 localhost 開頭的完整網址..."></textarea>
+        <button class="btn" style="background-color: #3b82f6; color: white;" onclick="processUrl()">一鍵解析金鑰</button>
+
+        <div id="resultBox" style="display: none;">
+            <hr style="border: 0; border-top: 1px solid #242b35; margin: 15px 0;">
+            <h3 style="font-size: 15px; color: #4ade80; margin: 0 0 10px 0;">🎉 解析成功！</h3>
+            
+            <div class="field">
+                <label>ACCESS TOKEN</label>
+                <div class="input-group">
+                    <input type="text" id="accessToken" readonly>
+                    <button class="copy-btn" onclick="copyField('accessToken')">複製</button>
+                </div>
             </div>
+
+            <div class="field">
+                <label>USER ID (PUID)</label>
+                <div class="input-group">
+                    <input type="text" id="userId" readonly>
+                    <button class="copy-btn" onclick="copyField('userId')">複製</button>
+                </div>
+            </div>
+            <p style="font-size: 11px; color: #64748b; margin-top: 10px; margin-bottom: 0;">💡 複製完成後，回到 Discord 輸入 <code>/shop</code> 並貼上這兩串數值即可查詢！</p>
         </div>
-        <p style="font-size: 12px; color: #64748b; margin-top: 15px; margin-bottom: 0;">💡 複製完成後，回到 Discord 輸入 <code>/shop</code> 並貼上這兩串數值即可查詢！</p>
     </div>
 </div>
 
 <script>
-    // 使用拳頭官方最新的客戶端 RSO 驗證網址，此通道永久白名單，絕不會跳出 404
-    const riotAuthUrl = "https://auth.riotgames.com/authorize?client_id=riot-client&redirect_uri=http%3A%2F%2Flocalhost%2Fredirect&response_type=token%20id_token&scope=openid%20link%20ban";
-
-    document.getElementById('loginBtn').addEventListener('click', () => {
-        const authWindow = window.open(riotAuthUrl, '_blank', 'width=500,height=600');
-        
-        alert("【全新操作指引】\n1. 請在彈出的視窗中登入您的 Riot 帳號。\n2. 登入成功後，視窗會變成『無法連線』或『localhost 拒絕連線』，這是完全正常的！\n3. 請直接複製那個失敗網頁的『整段網址列』，回來貼在下方的輸入框中。");
-        
-        const urlInput = prompt("請貼上登入成功後（localhost開頭）的完整網址列：");
-        if (urlInput) {
-            parseUrl(urlInput);
-        }
-    });
-
-    function parseUrl(url) {
+    function processUrl() {
+        const url = document.getElementById('urlInput').value.trim();
         try {
             const accessMatch = url.match(/access_token=([^&]+)/);
             const idTokenMatch = url.match(/id_token=([^&]+)/);
@@ -137,10 +171,10 @@
                 
                 document.getElementById('resultBox').style.display = 'block';
             } else {
-                alert("網址格式不正確，未能解析出 Token，請確保複製了完整的網址！");
+                alert("網址格式不正確，找不到 access_token，請確保您有完整複製 localhost 的網址！");
             }
         } catch (e) {
-            alert("解析出錯，請確認貼入的網址是否正確。");
+            alert("解析失敗，請檢查輸入的網址是否正確。");
         }
     }
 
