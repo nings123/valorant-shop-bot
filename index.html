@@ -86,7 +86,7 @@
             把舊的 Zenith 書籤按右鍵刪除，然後把下方<b>紅色虛線按鈕</b>重新【<b>拖曳到書籤列</b>】。
         </div>
         
-        <a class="drag-btn" href="javascript:(function(){const hash=window.location.hash;if(hash.includes('access_token')){let cleanUrl=window.location.href.replace(/\/zh-tw\/?/i,'/');const el=document.createElement('textarea');el.value=cleanUrl;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 獲取成功！\n\n標準格式金鑰已複製到剪貼簿！\n快回 Discord 貼上指令查詢吧！');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
+        <a class="drag-btn" href="javascript:(function(){const hash=window.location.hash;if(hash.includes('access_token')){let cleanUrl=window.location.href.replace(/\/zh-tw\/?/i,'/');window.history.replaceState(null,'',cleanUrl);const el=document.createElement('textarea');el.value=cleanUrl;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 獲取成功！\n\n標準格式金鑰已自動複製並修正網址列！\n現在你可以直接回 Discord 貼上，或手動複製網址列囉！');}else{window.location.assign('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1');}})();">
             ➔ 拖曳我到書籤列 ➔
         </a>
     </div>
