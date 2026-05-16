@@ -39,29 +39,48 @@
         }
         .step-num { font-size: 12px; color: #ff4655; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; display: block; letter-spacing: 1px; }
         .step-text { color: #cccccc; font-size: 14px; line-height: 1.6; }
-        .btn {
-            display: inline-block;
+        
+        /* 拖曳按鈕樣式 */
+        .drag-btn {
+            display: block;
             width: 100%;
-            padding: 15px;
-            background-color: #ffffff;
-            color: #000000;
+            padding: 18px;
+            background-color: #ff4655;
+            color: #ffffff;
             text-decoration: none;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 16px;
             letter-spacing: 1px;
-            border-radius: 2px;
+            border-radius: 4px;
             box-sizing: border-box;
-            transition: all 0.2s ease;
-            border: none;
-            cursor: pointer;
+            border: 2px dashed #ffffff;
+            cursor: move; /* 顯示可拖曳的滑鼠圖標 */
             text-transform: uppercase;
             text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 0 15px rgba(255, 70, 85, 0.4);
+            transition: transform 0.2s;
         }
-        .btn:hover { background-color: #ff4655; color: #ffffff; }
-        .btn-secondary { background-color: #1c1c1c; color: #888888; border: 1px solid #2c2c2c; margin-bottom: 15px; }
-        .btn-secondary:hover { border-color: #ffffff; color: #ffffff; background-color: #1c1c1c; }
+        .drag-btn:hover {
+            transform: scale(1.02);
+            background-color: #e33e4d;
+        }
+        
+        .btn-secondary {
+            display: inline-block;
+            width: 100%;
+            padding: 12px;
+            background-color: #1c1c1c;
+            color: #888888;
+            text-decoration: none;
+            font-size: 13px;
+            border: 1px solid #2c2c2c;
+            border-radius: 2px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .btn-secondary:hover { border-color: #ffffff; color: #ffffff; }
         code { background: #000000; padding: 3px 6px; border-radius: 2px; color: #ff4655; font-family: monospace; font-size: 13px; }
-        .success-tip { color: #00ff7f; font-size: 12px; margin-top: 8px; display: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -72,42 +91,31 @@
     
     <div class="step-card">
         <span class="step-num">Step 01</span>
-        <div class="step-text">請先點擊下方按鈕前往官網登入您的 Riot 帳號（若瀏覽器已登入過可直接跳過）。</div>
+        <div class="step-text">
+            請先按下鍵盤 <code>Ctrl + Shift + B</code> 顯示瀏覽器的「書籤列」（最上方放最愛網站的那一橫條）。
+        </div>
     </div>
-    <a href="https://account.riotgames.com/" target="_blank" class="btn btn-secondary">前往 Riot 官方登入中心</a>
 
     <div class="step-card">
         <span class="step-num">Step 02</span>
         <div class="step-text">
-            登入完成後，依照以下步驟操作：<br>
-            1. 點擊下方紅色按鈕<b>複製工具代碼</b>。<br>
-            2. 在剛才打開的 Riot 網頁空白處點【滑鼠右鍵】選擇【檢查】（或直接按鍵盤 <code>F12</code>）。<br>
-            3. 在跳出視窗的最上方選單，點擊 <b>「Console」</b> 或 <b>「主控台」</b>。<br>
-            <span style="color: #ff4655; font-weight: bold;">⚠️ 第一次使用注意：</span> 如果貼上時瀏覽器跳出黃色警告，請在最底下手動輸入 <code>允許貼上</code>（英文瀏覽器輸入 <code>allow pasting</code>）並按下 Enter 鍵解鎖！<br>
-            4. 將代碼貼上（<code>Ctrl + V</code>）並按下 <b>【Enter】</b> 執行即可！
+            用滑鼠按住下方<b>紅色虛線按鈕</b>，直接【<b>拖曳到書籤列</b>】放開。
+        </div>
+        
+        <a class="drag-btn" href="javascript:(function(){if(window.location.hostname!=='playvalorant.com'){alert('❌ 請先登入並前往特戰英豪官網分頁！\n\n點擊確定後將幫您開啟正確網頁，到該網頁後再點一次這個書籤即可！');window.open('https://playvalorant.com/zh-tw/','_blank');}else{fetch('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1',{method:'GET',redirect:'manual'}).then(res=>{const loc=res.headers.get('location');if(loc){const el=document.createElement('textarea');el.value=loc;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('🎉 獲取成功！\n\n安全網址已自動複製到您的剪貼簿！\n請立刻回到 Discord 貼上查詢吧！');}else{alert('❌ 獲取失敗！請確認您是否已經完成登入。');}}).catch(err=>alert('❌ 發生錯誤！請確認您是在特戰官網分頁中點擊此書籤！'));}})();">
+            ➔ 拖曳我到書籤列 ➔
+        </a>
+        
+        <a href="https://account.riotgames.com/" target="_blank" class="btn-secondary">點我前往 Riot 官方登入中心</a>
+    </div>
+
+    <div class="step-card" style="margin-bottom: 0;">
+        <span class="step-num">Step 03</span>
+        <div class="step-text">
+            登入後在<b>特戰官網分頁</b>點一下你剛剛放進書籤列的那個書籤，金鑰網址就會自動複製好了！直接去 Discord 貼上 <code>/shop</code> 即可！
         </div>
     </div>
-    <button onclick="copyCode()" class="btn" id="copyBtn" style="background-color: #ff4655; color: white;">複製工具代碼</button>
-    <div id="successMsg" class="success-tip">✓ 工具代碼已成功複製到您的剪貼簿！</div>
-
-    <div class="step-card" style="margin-top: 25px; margin-bottom: 0;">
-        <span class="step-num">Step 03</span>
-        <div class="step-text">回到 Discord 輸入 <code>/shop</code>，並將複製的整條網址直接貼進 <code>access_token</code> 欄位即可秒出商店！</div>
-    </div>
 </div>
-
-<script>
-    function copyCode() {
-        // 內含自動跳轉特戰官網防禦機制的終極代碼
-        const codeText = "if(window.location.hostname !== 'playvalorant.com'){ alert('❌ 偵測到您目前在帳號管理頁面！\\n\\n由於 Riot 限制，請點擊「確定」，系統會自動幫您開啟【特戰英豪台灣官網】。\\n\\n等新網頁載入完後，直接在該新網頁重新按下 F12 貼上代碼執行即可！'); window.open('https://playvalorant.com/zh-tw/', '_blank'); } else { fetch('https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&response_type=token+id_token&redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&scope=openid+link+ban&nonce=1', {method: 'GET', redirect: 'manual'}).then(res => { const loc = res.headers.get('location'); if(loc) { copy(loc); console.log('%c🎉 獲取成功！長網址已自動複製到你的剪貼簿，請回 Discord 貼上！', 'color: #00ff7f; font-size: 16px; font-weight: bold;'); alert('🎉 獲取成功！\\n\\n安全長網址網址已自動複製到您的剪貼簿！\\n請立刻回到 Discord 貼上查詢吧！'); } else { alert('❌ 獲取失敗！請確認您是否已經完成 Step 01 登入。'); } }).catch(err => alert('❌ 發生錯誤！請確認您是在特戰官網分頁中執行此代碼！')); }";
-        
-        navigator.clipboard.writeText(codeText).then(() => {
-            const msg = document.getElementById('successMsg');
-            msg.style.display = 'block';
-            setTimeout(() => { msg.style.display = 'none'; }, 4000);
-        });
-    }
-</script>
 
 </body>
 </html>
